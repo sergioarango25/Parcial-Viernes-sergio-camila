@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "name": "Sergio",
+    "email": "sergio@test.com",
+    "passwordHash": "$2b$10$0.beWhy2u.6LQyOwlxcMVOdeFpDSGn4AXuYEpPAW1.F6lNjEFDJMm",
+    "createdAt": "2025-12-13T23:18:12.084Z"
+  }
+]
