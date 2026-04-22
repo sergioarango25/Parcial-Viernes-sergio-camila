@@ -20,7 +20,6 @@ function Men() {
 
   const [productosDB, setProductosDB] = useState<any[]>([]);
 
-  // 🔹 carrito localStorage
   useEffect(() => {
     const data = localStorage.getItem("carrito");
     if (data) setCarrito(JSON.parse(data));
@@ -30,7 +29,7 @@ function Men() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
-  // 🔥 traer productos
+
   useEffect(() => {
     const fetchProductos = async () => {
       const { data, error } = await supabase
@@ -54,7 +53,6 @@ function Men() {
     fetchProductos();
   }, []);
 
-  // 🔹 productos locales
   const productosLocales = [
     { id: 1, name: "Chaqueta negra", price: 180, img: jacket, description: "Chaqueta negra de cuero perfecta", sizes: ["S","M","L","XL"] },
     { id: 2, name: "Polo hombre", price: 120, img: polo, description: "Polo casual elegante", sizes: ["S","M","L","XL"] },
@@ -66,7 +64,6 @@ function Men() {
 
   const productos = [...productosLocales, ...productosDB];
 
-  // 🔥 abrir producto (RESET talla)
   const abrirProducto = (producto: any) => {
     setProductoActivo(producto);
     setTallaSeleccionada(null);
@@ -119,7 +116,7 @@ function Men() {
        + Crear
       </button>
 
-      {/* 🔥 GRID */}
+
       <div className="men-scroll">
         <section className="men-contenedor-ropa">
           {productos.map((producto, index) => (

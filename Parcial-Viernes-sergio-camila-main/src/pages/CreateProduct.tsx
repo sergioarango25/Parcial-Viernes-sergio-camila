@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "../supabase";
@@ -41,6 +42,7 @@ function CreateProduct() {
       alert("Error: " + error.message);
     } else {
       alert(`Producto creado en ${category} 🚀`);
+
 
       setName("");
       setPrice(0);
