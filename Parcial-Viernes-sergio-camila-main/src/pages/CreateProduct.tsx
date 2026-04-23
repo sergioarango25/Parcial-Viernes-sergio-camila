@@ -6,7 +6,6 @@ import "../styles/CreateProduct.css";
 
 function CreateProduct() {
   const [searchParams] = useSearchParams();
-
   
   const category = searchParams.get("category") || "men";
 
@@ -42,6 +41,7 @@ function CreateProduct() {
       alert("Error: " + error.message);
     } else {
       alert(`Producto creado en ${category} 🚀`);
+
 
 
       setName("");
