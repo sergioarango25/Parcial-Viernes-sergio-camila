@@ -1,10 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   height: 100%;
+  overflow: auto;
 }
 
+/* BOTONES */
 .olvidar-contraseña {
   position: fixed;
   top: 425px;
@@ -16,16 +17,16 @@ html, body {
   font-size: 1rem;
   letter-spacing: 2px;
   cursor: pointer;
-  margin: -10px;
   text-decoration: underline;
   transition: 0.3s;
-  opacity: 1;
+  z-index: 10;
 }
+
 .olvidar-contraseña:hover {
   text-decoration: none;
-  color: white;
   scale: 1.1;
 }
+
 .registrarse {
   position: fixed;
   top: 400px;
@@ -37,30 +38,32 @@ html, body {
   font-size: 1rem;
   letter-spacing: 2px;
   cursor: pointer;
-  margin: -10px;
   text-decoration: underline;
   transition: 0.3s;
-  opacity: 1;
+  z-index: 10;
 }
+
 .registrarse:hover {
   text-decoration: none;
-  color: white;
   scale: 1.1;
 }
 
+/* INPUTS */
 input::placeholder {
   color: black;
   font-family: "Bebas Neue";
   font-size: 1.2rem;
 }
+
 input:focus {
   outline: none;
   border: 2px solid black;
 }
 
+/* HEADER */
 .header-login {
   position: fixed;
-  top: 10px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   font-family: "Bebas Neue";
@@ -68,14 +71,14 @@ input:focus {
   color: white;
   font-size: 4em;
   letter-spacing: 2px;
-  z-index: 1;
+  z-index: 10;
 }
 
 .header-login:hover {
   filter: drop-shadow(0 0 10px white);
-  transition: filter 0.3s ease;
 }
 
+/* FONDO */
 .fondoPrimario {
   position: fixed;
   top: 0;
@@ -83,39 +86,46 @@ input:focus {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 0; 
+  z-index: 0;
 }
 
+/* FORMULARIO */
 .box {
+  position: absolute; /* 🔥 clave */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 100px auto;
-  border: 2px solid white;
+
   width: 500px;
   height: 465px;
+
+  border: 2px solid white;
   border-radius: 15px;
+
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(10px);
+
   box-shadow:
     15px 20px 5px rgba(0, 0, 0, 0.8),
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+  z-index: 10; /* 🔥 clave */
 }
 
 .box:hover {
   box-shadow:
     0 0 25px rgba(0, 0, 0, 0.9),
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
-  transition: box-shadow 0.3s ease;
 }
 
+/* TITULO */
 .title h1 {
-  position: relative;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  line-height: 0.1px;
+  margin-bottom: 20px;
   font-family: "Bebas Neue";
   color: white;
   letter-spacing: 5px;
@@ -123,32 +133,22 @@ input:focus {
   font-size: 3.5em;
 }
 
+/* INPUTS */
 .email,
 .password {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "Bebas Neue";
-  justify-content: center;
   width: 350px;
-  box-shadow: 0 10px 5px rgba(0, 0, 0, 0.5);
   height: 20px;
-  color: black;
-  border: none;
   margin: 15px;
-  border-radius: 7px;
   padding: 10px;
+
+  border-radius: 7px;
+  border: none;
+
   font-size: 1.5em;
-}
+  font-family: "Bebas Neue";
 
-.email,
-.password {
-  display: flex;
-  margin-top: 5px;
-}
+  box-shadow: 0 10px 5px rgba(0, 0, 0, 0.5);
 
-.email,
-.password {
   transition: box-shadow 0.3s ease;
 }
 
@@ -157,21 +157,23 @@ input:focus {
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.7);
 }
 
+/* BOTON LOGIN */
 .login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 200px;
-  font-family: "Bebas Neue";
   height: 50px;
+
+  font-family: "Bebas Neue";
+  font-size: 35px;
+
   border: 3px solid black;
   border-radius: 15px;
-  font-size: 35px;
-  padding: 15px;
+
   background-color: white;
   color: black;
+
   cursor: pointer;
   margin-top: 20px;
+
   box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -180,8 +182,4 @@ input:focus {
   background-color: black;
   border: 3px solid white;
   box-shadow: 0 10px 5px rgba(0, 0, 0, 0.6);
-  transition: box-shadow 0.3s ease;
 }
-
-
-
