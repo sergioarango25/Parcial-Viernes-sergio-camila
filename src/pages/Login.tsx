@@ -26,14 +26,13 @@ function Login() {
   };
 
   return (
-    <>
-      <section>
-        <img
-          src="https://i.pinimg.com/1200x/c1/da/73/c1da734357b6d54987b01edfbca5ec49.jpg"
-          className="fondoPrimario"
-        />
-        <div className="header-login">Brand New</div>
-      </section>
+    <div className="login-container">
+      <img
+        src="https://i.pinimg.com/1200x/c1/da/73/c1da734357b6d54987b01edfbca5ec49.jpg"
+        className="fondoPrimario"
+      />
+
+      <div className="header-login">Brand New</div>
 
       <form className="box" onSubmit={handleLogin}>
         <div className="title">
@@ -76,7 +75,7 @@ function Login() {
 
         {errorMsg && <p className="error">{errorMsg}</p>}
       </form>
-    </>
+    </div>
   );
 }
 
