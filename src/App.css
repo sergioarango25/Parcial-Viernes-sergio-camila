@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #f2f2f2;
+}
+
+.container {
+  display: flex;
+  padding: 30px;
+  gap: 30px;
+}
+
+/* IZQUIERDA */
+.left {
+  width: 65%;
+}
+
+.left h2 {
+  margin-bottom: 20px;
+}
+
+/* TARJETAS */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.card:hover {
+  border: 1px solid #3483fa;
+}
+
+.card input {
+  transform: scale(1.2);
+}
+
+.card img {
+  width: 45px;
+}
+
+.badge {
+  background: #d4f5d4;
+  color: green;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+/* FORM */
+.form input {
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+}
+
+/* BOTÓN */
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  background: #3483fa;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button:disabled {
+  background: gray;
+}
+
+/* DERECHA */
+.right {
+  width: 30%;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
+}
