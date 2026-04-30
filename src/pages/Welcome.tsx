@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "../supabase";
 import "../styles/Welcome.css";
 
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaHome, FaEnvelope, FaSignInAlt, FaSearch } from "react-icons/fa";
 
 import girl from "../assets/girl-welcome.png";
 import men from "../assets/men-welcome.png";
@@ -20,7 +20,23 @@ function Welcome() {
 
   return (
     <>
-      {/*  ICONO USUARIO */}
+      {/* 🔹 HEADER NUEVO */}
+      <header className="header">
+        <h1 className="logo">BRAND NEW</h1>
+
+        <div className="search-bar">
+          <FaSearch />
+          <input type="text" placeholder="Buscar ropa..." />
+        </div>
+
+        <div className="menu-icons">
+          <FaHome title="Sucursales" />
+          <FaSignInAlt title="Login" onClick={() => navigate("/")} />
+          <FaEnvelope title="Contacto" />
+        </div>
+      </header>
+
+      {/* 🔹 ICONO USUARIO */}
       <div className="user-menu">
         <FaUserCircle
           className="user-icon"
@@ -42,14 +58,12 @@ function Welcome() {
 
       <section className="cartas">
 
-        {/* CARD 1 */}
         <div className="card1">
           <img
             src={men}
             className="men-welcome"
             onClick={() => navigate("/sessions/men")}
           />
-
           <div className="texto">
             <p>Marca tu propio ritmo</p>
             <button onClick={() => navigate("/sessions/men")}>
@@ -58,14 +72,12 @@ function Welcome() {
           </div>
         </div>
 
-        {/* CARD 2 */}
         <div className="card2">
           <img
             src={couple}
             className="couple-welcome"
             onClick={() => navigate("/sessions/couple")}
           />
-
           <div className="texto">
             <p>Dos estilos, una misma conexión</p>
             <button onClick={() => navigate("/sessions/couple")}>
@@ -74,14 +86,12 @@ function Welcome() {
           </div>
         </div>
 
-        {/* CARD 3 */}
         <div className="card3">
           <img
             src={girl}
             className="girl-welcome"
             onClick={() => navigate("/sessions/girl")}
           />
-
           <div className="texto">
             <p>Elegancia y actitud pensadas para ella</p>
             <button onClick={() => navigate("/sessions/girl")}>
@@ -91,22 +101,6 @@ function Welcome() {
         </div>
 
       </section>
-
-      <section>
-        <div className="titulo">
-          <h1>BRAND NEW</h1>
-        </div>
-      </section>
-
-      <form className="menu">
-        <button type="button">Sucursales</button>
-
-        <button type="button" onClick={() => navigate("/")}>
-          Log-in
-        </button>
-
-        <button type="button">Contacto</button>
-      </form>
     </>
   );
 }

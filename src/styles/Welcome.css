@@ -203,3 +203,57 @@
 .dropdown button:hover {
   background: red;
 }
+/* 🔥 HEADER NUEVO */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 95px;
+  background: black;
+  border-bottom: 5px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 1000;
+}
+
+.logo {
+  font-family: "Bebas Neue";
+  font-size: 40px;
+  color: white;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  margin-left: 8px;
+}
+
+.menu-icons {
+  display: flex;
+  gap: 20px;
+  font-size: 22px;
+  color: black;
+  background: white;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.menu-icons svg {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu-icons svg:hover {
+  transform: scale(1.2);
+}
