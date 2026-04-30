@@ -20,6 +20,8 @@ function Girl() {
   const [productosDB, setProductosDB] = useState<any[]>([]);
   const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
 
+  const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
+
   useEffect(() => {
     const data = localStorage.getItem("carrito_girl");
     if (data) setCarrito(JSON.parse(data));
@@ -39,6 +41,15 @@ function Girl() {
   }, [calificaciones]);
 
   useEffect(() => {
+    const data = localStorage.getItem("favoritos_girl");
+    if (data) setFavoritos(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favoritos_girl", JSON.stringify(favoritos));
+  }, [favoritos]);
+
+  useEffect(() => {
     const fetchProductos = async () => {
       const { data, error } = await supabase
         .from("productos")
@@ -50,7 +61,7 @@ function Girl() {
           ...p,
           sizes:
             p.type === "zapatos"
-              ? ["8", "10", "12", "14"]
+              ? ["37", "38", "39", "40"]
               : ["XS", "S", "M", "L"],
         }));
 
@@ -63,7 +74,7 @@ function Girl() {
 
   const productosLocales = [
     { id: 1, name: "Blusa", price: 90, img: blusa, description: "Blusa elegante para mujer", sizes: ["XS", "S", "M", "L"] },
-    { id: 2, name: "Converse", price: 150, img: converse, description: "Converse clásicos", sizes: ["8", "10", "12", ""] },
+    { id: 2, name: "Converse", price: 150, img: converse, description: "Converse clásicos", sizes: ["37", "38", "39", "40"] },
     { id: 3, name: "Jeans", price: 130, img: jeans, description: "Jeans modernos", sizes: ["XS", "S", "M", "L"] },
     { id: 4, name: "Shorts", price: 100, img: shorts, description: "Shorts casuales", sizes: ["XS", "S", "M", "L"] },
     { id: 5, name: "Bolsa", price: 110, img: bolsa, description: "Bolsa de moda", sizes: ["Única"] },
@@ -132,6 +143,21 @@ function Girl() {
               className="girl-card"
               onClick={() => abrirProducto(producto)}
             >
+              <button
+                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFavoritos({
+                    ...favoritos,
+                    [producto.id]: !favoritos[producto.id],
+                  });
+                }}
+              >
+                <svg viewBox="0 0 24 24" className="icono-corazon">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              </button>
+
               <img src={producto.img} />
             </div>
           ))}
@@ -149,7 +175,6 @@ function Girl() {
             <p>{productoActivo.description}</p>
             <span className="girl-precio">$ {productoActivo.price}</span>
 
-            {/*  ESTRELLAS EN EL MODAL */}
             <div className="rating-temu-modal">
               {[1, 2, 3, 4, 5].map((estrella) => (
                 <button
