@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 import "../styles/Men.css";
+import { FaShoppingBag } from "react-icons/fa";
 
 import jacket from "../assets/men/jacket.png";
 import polo from "../assets/men/polo.png";
@@ -17,8 +18,10 @@ function Men() {
   const [carrito, setCarrito] = useState<any[]>([]);
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
-
   const [productosDB, setProductosDB] = useState<any[]>([]);
+  const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
+
+  const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const data = localStorage.getItem("carrito");
@@ -29,6 +32,23 @@ function Men() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
+  useEffect(() => {
+    const data = localStorage.getItem("ratings_men");
+    if (data) setCalificaciones(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ratings_men", JSON.stringify(calificaciones));
+  }, [calificaciones]);
+
+  useEffect(() => {
+    const data = localStorage.getItem("favoritos_men");
+    if (data) setFavoritos(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favoritos_men", JSON.stringify(favoritos));
+  }, [favoritos]);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -109,13 +129,12 @@ function Men() {
       </button>
 
       <button className="men-mostrar" onClick={() => setMostrarCarrito(true)}>
-        Compras
+        <FaShoppingBag />
       </button>
 
       <button className="btn-create" onClick={() => navigate("/create?category=men")}>
-       + Crear
+        + Crear
       </button>
-
 
       <div className="men-scroll">
         <section className="men-contenedor-ropa">
@@ -125,13 +144,27 @@ function Men() {
               className="men-card"
               onClick={() => abrirProducto(producto)}
             >
+              <button
+                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFavoritos({
+                    ...favoritos,
+                    [producto.id]: !favoritos[producto.id],
+                  });
+                }}
+              >
+                <svg viewBox="0 0 24 24" className="icono-corazon">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              </button>
+
               <img src={producto.img} />
             </div>
           ))}
         </section>
       </div>
 
-      {/* MODAL PRODUCTO */}
       {productoActivo && (
         <div className="men-modal" onClick={cerrarProducto}>
           <div
@@ -143,6 +176,23 @@ function Men() {
             <p>{productoActivo.description}</p>
             <span className="men-precio">$ {productoActivo.price}</span>
 
+            <div className="rating-temu-modal">
+              {[1, 2, 3, 4, 5].map((estrella) => (
+                <button
+                  key={estrella}
+                  className="rating-star-modal"
+                  onClick={() =>
+                    setCalificaciones({
+                      ...calificaciones,
+                      [productoActivo.id]: estrella,
+                    })
+                  }
+                >
+                  {calificaciones[productoActivo.id] >= estrella ? "★" : "☆"}
+                </button>
+              ))}
+            </div>
+
             <button onClick={agregarAlCarrito} className="men-btn-carrito">
               Agregar al carrito
             </button>
@@ -151,7 +201,6 @@ function Men() {
               ✕
             </button>
 
-            {/* 🔥 TALLAS SEGURAS */}
             <div className="men-tallas">
               {(productoActivo?.sizes || []).map((talla: string) => (
                 <button
@@ -169,7 +218,6 @@ function Men() {
         </div>
       )}
 
-      {/* CARRITO */}
       {mostrarCarrito && (
         <div className="men-modal" onClick={() => setMostrarCarrito(false)}>
           <div

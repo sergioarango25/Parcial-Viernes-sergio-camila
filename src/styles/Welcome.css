@@ -1,12 +1,64 @@
+
+html, body {
+  height: auto !important; 
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-y: visible !important; /* Obliga a mostrar el scroll si el contenido rebasa */
+}
+
+.infoPromotion{
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  background-color: white;
+  width: 100%;
+  text-align: center;
+  font-family: "Bebas Neue";
+  font-size: 1.1rem;
+  z-index: 1;
+}
+
+.promociones {
+  display: flex;
+  margin: 6% 2%;
+}
+
+.promotion {
+  flex: 1;
+  overflow: hidden;
+  box-shadow: 0 5px 2px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+
+.promotion img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-top: 5px solid red;
+  border-bottom: 5px solid red;
+  transition: transform 0.5s ease;
+
+}
+
+.promotion:hover img {
+  transform: scale(1.05);
+}
+
 /*  Contenedor principal */
 .cartas {
-  position: fixed;
-  top: 110px;
-  left: 2%;
-  right: 2%;
-  bottom: 40px;
+position: relative; 
+  margin-top: 18%; 
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 40px; 
   display: flex;
   gap: 25px;
+  height: calc(100vh - 150px);
+  min-height: 80vh;  
 }
 
 /*  Cards */
@@ -25,7 +77,7 @@
   width: 100%;
   height: 75%;
   object-fit: contain;
-  border: 2px solid black;
+  border: 2px solid white;
   box-shadow: 0 5px 2px rgba(0, 0, 0, 0.8);
   cursor: pointer;  
   transition: transform 0.5s ease;
@@ -35,8 +87,8 @@
 .card1:hover .men-welcome,
 .card2:hover .couple-welcome,
 .card3:hover .girl-welcome {
-    box-shadow: none;
-    transform: scale(1.05);
+  box-shadow: none;
+  transform: scale(1.05);
 }
 
 /*  Texto abajo */
@@ -46,7 +98,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   font-family: "Bebas Neue";
   color: white;
   text-align: center;
@@ -62,7 +113,6 @@
   border: 1px solid black;
   border-radius: 5px;
   z-index: 100;
-
 }
 
 /*  Botón */
@@ -83,13 +133,11 @@
   transform: scale(1.1);
 }
 
-/* 🔹 Fondos */
 .men-welcome { background: yellow; }
 .couple-welcome { background: red; }
 .girl-welcome { background: blue; }
 
 
-/* no mover */
 .decorador1 {
   position: static;
   top: 0;
@@ -97,7 +145,7 @@
   width: 100%;
   height: 95px;
   background: black;
-  border-bottom: 5px solid white;
+  border-bottom: 2px solid white;
   z-index: 1;
 }
 
@@ -111,38 +159,88 @@
 .menu {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  width: 100%;
   display: flex;
-  gap: 50px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  margin-right: 50px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 25px;
+  padding: 15px 40px;
+  z-index: 20;
 }
 
-.menu button {
-  background: white;
-  border: 3px solid transparent;
-  color: black;
-  font-size: 20px;
+
+.search-bar input {
+  position: absolute;
+  top: 60%;
+  left: 60%;
+  width: 250px;
+  text-align: left;
   padding: 10px;
-  cursor: pointer;
-  font-family: "Bebas Neue";
   border-radius: 20px;
-  box-shadow: 20px 5px 6px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  z-index: 10;
-
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease,
-    border 0.3s ease;
+  border: none;
+  outline: none;
+  font-size: 25px;
+  font-family: "Bebas Neue";
 }
 
-.menu button:hover {
-  transform: scale(1.1);
-  background: transparent;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
-  border: 2px solid white;
+
+.corazon {
+  position: absolute;
+  top: 60%;
+  right: 10%;
+  font-size:2.5rem;
   color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none  ;
 }
+
+.icon {
+  position:absolute;
+  top: 60%;
+  right: 15%;
+  font-size: 2.5rem;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  background: transparent;
+  border: none;
+}
+
+
+.icon:hover,
+.corazon:hover{
+  transform: scale(1.2);
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  font-size: 10px;
+  border: 2px solid white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.dropdown button {
+  border: none;
+  background: black;
+  color: white;
+  padding: 8px 15px;
+  font-family: "Bebas Neue";
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dropdown button:hover {
+  background: red;
+}
+
+
 
 .titulo {
   position: absolute;
@@ -164,42 +262,67 @@
   font-size: 1rem;
 }
 
-.user-menu {
-  position: fixed;
-  top: 25px;
-  right: 35%;
-  z-index: 2000;
-}
 
-.user-icon {
-  font-size: 2.5rem;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.user-icon:hover {
-  transform: scale(1.2);
-}
-
-.dropdown {
-  margin-top: 10px;
-  background: white;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-.dropdown button {
-  border: none;
-  background: black;
-  color: white;
-  padding: 8px 15px;
+.informacion h3 {
+  position: absolute;
+  top: 140%;
+  left: 50%;
+  color: white;  
+  border-top: 2px solid white;
+  width: 100%;
+  transform: translate(-50%, -50%);
   font-family: "Bebas Neue";
-  cursor: pointer;
-  border-radius: 8px;
+  padding: 40px;
+  font-family: "Bebas Neue";
+  text-align: center;
+  font-size: 1.5rem;
 }
 
-.dropdown button:hover {
-  background: red;
+.contenido {
+  position: absolute;
+  top:290%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  border-top: 2px solid white;
+}
+
+
+p {
+  font-family: "Bebas Neue";
+  font-size: 1.5rem;
+  color: white;
+} 
+
+.contenido footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  width: 100%;
+}
+
+
+.contenido ul {
+  margin: 50px;
+  font-size: 1.2rem;
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.contenido li {
+  margin: 40px;
+}
+
+
+.contenido a {
+  color: white;
+  text-decoration: none;
+}
+
+.contenido a:hover {
+  transform: scale(1.2);
+  color: white;
+  text-decoration: underline;
 }

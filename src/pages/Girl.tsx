@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 import "../styles/Girl.css";
+import { FaShoppingBag } from "react-icons/fa";
 
 import blusa from "../assets/girl/blusa.png";
 import converse from "../assets/girl/converse.png";
@@ -18,8 +19,10 @@ function Girl() {
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
+  const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
 
-  // 🔹 Carrito localStorage
+  const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
+
   useEffect(() => {
     const data = localStorage.getItem("carrito_girl");
     if (data) setCarrito(JSON.parse(data));
@@ -29,7 +32,24 @@ function Girl() {
     localStorage.setItem("carrito_girl", JSON.stringify(carrito));
   }, [carrito]);
 
-  // 🔥 Traer productos desde Supabase
+  useEffect(() => {
+    const data = localStorage.getItem("ratings_girl");
+    if (data) setCalificaciones(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ratings_girl", JSON.stringify(calificaciones));
+  }, [calificaciones]);
+
+  useEffect(() => {
+    const data = localStorage.getItem("favoritos_girl");
+    if (data) setFavoritos(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favoritos_girl", JSON.stringify(favoritos));
+  }, [favoritos]);
+
   useEffect(() => {
     const fetchProductos = async () => {
       const { data, error } = await supabase
@@ -42,7 +62,7 @@ function Girl() {
           ...p,
           sizes:
             p.type === "zapatos"
-              ? ["8", "10", "12", "14"]
+              ? ["37", "38", "39", "40"]
               : ["XS", "S", "M", "L"],
         }));
 
@@ -53,10 +73,9 @@ function Girl() {
     fetchProductos();
   }, []);
 
-  // 🔹 Productos locales
   const productosLocales = [
     { id: 1, name: "Blusa", price: 90, img: blusa, description: "Blusa elegante para mujer", sizes: ["XS", "S", "M", "L"] },
-    { id: 2, name: "Converse", price: 150, img: converse, description: "Converse clásicos", sizes: ["8", "10", "12", ""] },
+    { id: 2, name: "Converse", price: 150, img: converse, description: "Converse clásicos", sizes: ["37", "38", "39", "40"] },
     { id: 3, name: "Jeans", price: 130, img: jeans, description: "Jeans modernos", sizes: ["XS", "S", "M", "L"] },
     { id: 4, name: "Shorts", price: 100, img: shorts, description: "Shorts casuales", sizes: ["XS", "S", "M", "L"] },
     { id: 5, name: "Bolsa", price: 110, img: bolsa, description: "Bolsa de moda", sizes: ["Única"] },
@@ -65,7 +84,6 @@ function Girl() {
 
   const productos = [...productosLocales, ...productosDB];
 
-  // 🔥 Abrir producto (reset talla)
   const abrirProducto = (producto: any) => {
     setProductoActivo(producto);
     setTallaSeleccionada(null);
@@ -111,14 +129,13 @@ function Girl() {
       </button>
 
       <button className="girl-mostrar" onClick={() => setMostrarCarrito(true)}>
-        Compras
+        <FaShoppingBag />
       </button>
 
       <button className="btn-create" onClick={() => navigate("/create?category=girl")}>
         + Crear
       </button>
 
-      {/* 🔥 GRID */}
       <div className="girl-scroll">
         <section className="girl-contenedor-ropa">
           {productos.map((producto, index) => (
@@ -127,13 +144,27 @@ function Girl() {
               className="girl-card"
               onClick={() => abrirProducto(producto)}
             >
+              <button
+                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFavoritos({
+                    ...favoritos,
+                    [producto.id]: !favoritos[producto.id],
+                  });
+                }}
+              >
+                <svg viewBox="0 0 24 24" className="icono-corazon">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              </button>
+
               <img src={producto.img} />
             </div>
           ))}
         </section>
       </div>
 
-      {/* MODAL PRODUCTO */}
       {productoActivo && (
         <div className="girl-modal" onClick={cerrarProducto}>
           <div
@@ -145,6 +176,23 @@ function Girl() {
             <p>{productoActivo.description}</p>
             <span className="girl-precio">$ {productoActivo.price}</span>
 
+            <div className="rating-temu-modal">
+              {[1, 2, 3, 4, 5].map((estrella) => (
+                <button
+                  key={estrella}
+                  className="rating-star-modal"
+                  onClick={() =>
+                    setCalificaciones({
+                      ...calificaciones,
+                      [productoActivo.id]: estrella,
+                    })
+                  }
+                >
+                  {calificaciones[productoActivo.id] >= estrella ? "★" : "☆"}
+                </button>
+              ))}
+            </div>
+
             <button onClick={agregarAlCarrito} className="girl-btn-carrito">
               Agregar al carrito
             </button>
@@ -153,7 +201,6 @@ function Girl() {
               ✕
             </button>
 
-            {/* 🔥 TALLAS */}
             <div className="girl-tallas">
               {(productoActivo?.sizes || []).map((talla: string) => (
                 <button
@@ -171,7 +218,6 @@ function Girl() {
         </div>
       )}
 
-      {/* CARRITO */}
       {mostrarCarrito && (
         <div className="girl-modal" onClick={() => setMostrarCarrito(false)}>
           <div

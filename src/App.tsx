@@ -7,6 +7,7 @@ import Couple from "./pages/Couple";
 import Girl from "./pages/Girl";
 import CreateProduct from "./pages/CreateProduct";
 import ProtectedRoute from "./ProtectedRoute";
+import Tiendas from "./pages/Tiendas";
 
 function App() {
   return (
@@ -58,6 +59,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tiendas"
+          element={
+            <ProtectedRoute>
+              <Tiendas />
             </ProtectedRoute>
           }
         />
