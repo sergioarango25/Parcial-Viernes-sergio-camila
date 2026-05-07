@@ -170,24 +170,12 @@ position: relative;
 }
 
 
-.search-bar input {
-  position: absolute;
-  top: 60%;
-  left: 60%;
-  width: 250px;
-  text-align: left;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-  font-size: 25px;
-  font-family: "Bebas Neue";
-}
+
 
 
 .corazon {
   position: absolute;
-  top: 60%;
+  top: 30%;
   right: 10%;
   font-size:2.5rem;
   color: white;
@@ -198,7 +186,7 @@ position: relative;
 
 .icon {
   position:absolute;
-  top: 60%;
+  top: 30%;
   right: 15%;
   font-size: 2.5rem;
   color: white;
@@ -212,32 +200,6 @@ position: relative;
 .icon:hover,
 .corazon:hover{
   transform: scale(1.2);
-}
-
-
-.dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background: white;
-  border-radius: 10px;
-  font-size: 10px;
-  border: 2px solid white;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-.dropdown button {
-  border: none;
-  background: black;
-  color: white;
-  padding: 8px 15px;
-  font-family: "Bebas Neue";
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.dropdown button:hover {
-  background: red;
 }
 
 
@@ -325,4 +287,205 @@ p {
   transform: scale(1.2);
   color: white;
   text-decoration: underline;
+}
+
+
+/* apartado de tamaño de items a la hora de buscar en la barra de busqueda, para que no se desconfigure el diseño de la pagina. */
+
+.search-bar input {
+  width: 250px;
+  padding: 10px;
+  padding-right: 50px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 25px;
+  font-family: "Bebas Neue";
+}
+
+.search-bar input {
+  padding-right: 40px;
+}
+
+.search-bar {
+  position: relative;
+  right: 20%;
+  display: flex;
+  align-items: center;
+}
+
+
+
+.clear-search {  
+ position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: 200;
+  color: black;
+  z-index: 200;
+  user-select: none;
+}
+
+
+.search-results {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  width: 150%;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 20;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.search-item:hover {
+  border: 1px solid black;
+  background: #f2f2f2;
+}
+
+.search-item img {
+  width: 70px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.search-item h4 {
+  margin: 0;
+  font-size: 25px;
+  color: black;
+}
+
+.search-item p {
+  margin: 0;
+  font-size:20px;
+  color: black;
+}
+
+.no-results {
+  color: black;
+  text-align: center;
+}
+
+
+
+.favorites-modal {
+  position: absolute;
+  top: 100px;
+  right: 10%;
+  width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 5px;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.favorite-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.favorite-item:hover {
+  background: #f2f2f2;
+}
+
+.favorite-item img {
+  width: 70px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.favorite-item h4 {
+  color: black;
+  margin: 0;
+}
+
+.favorite-item p {
+  color: gray;
+  margin: 0;
+}
+
+.total-favoritos{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 24px;
+  color: red;
+}
+.pago {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 15px;
+  background: white;
+  color: black;
+  font-size: 25px;
+  font-family: "Bebas Neue";
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pago:hover {
+  transform: scale(1.03);
+}
+
+.dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  font-size: 10px;
+  border: 2px solid white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.dropdown button {
+  border: none;
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  font-family: "Bebas Neue";
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dropdown button:hover {
+  background: red;
+}
+
+
+.dropdown h3{
+  color: black;
+  font-size: 15px;
+  text-align: center;
 }

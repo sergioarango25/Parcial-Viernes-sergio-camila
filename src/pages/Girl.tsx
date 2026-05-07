@@ -20,12 +20,14 @@ function Girl() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
   const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
-
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const data = localStorage.getItem("carrito_girl");
-    if (data) setCarrito(JSON.parse(data));
+
+    if (data) {
+      setCarrito(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
@@ -34,21 +36,40 @@ function Girl() {
 
   useEffect(() => {
     const data = localStorage.getItem("ratings_girl");
-    if (data) setCalificaciones(JSON.parse(data));
+
+    if (data) {
+      setCalificaciones(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("ratings_girl", JSON.stringify(calificaciones));
   }, [calificaciones]);
 
+  // FAVORITOS POR USUARIO
   useEffect(() => {
-    const data = localStorage.getItem("favoritos_girl");
-    if (data) setFavoritos(JSON.parse(data));
-  }, []);
+    const cargarFavoritos = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  useEffect(() => {
-    localStorage.setItem("favoritos_girl", JSON.stringify(favoritos));
-  }, [favoritos]);
+      if (!user) return;
+
+      const favoritosGuardados = JSON.parse(
+        localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+      );
+
+      const favoritosObjeto: { [key: number]: boolean } = {};
+
+      favoritosGuardados.forEach((item: any) => {
+        favoritosObjeto[item.id] = true;
+      });
+
+      setFavoritos(favoritosObjeto);
+    };
+
+    cargarFavoritos();
+  }, []);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -74,12 +95,54 @@ function Girl() {
   }, []);
 
   const productosLocales = [
-    { id: 1, name: "Blusa", price: 90, img: blusa, description: "Blusa elegante para mujer", sizes: ["XS", "S", "M", "L"] },
-    { id: 2, name: "Converse", price: 150, img: converse, description: "Converse clásicos", sizes: ["37", "38", "39", "40"] },
-    { id: 3, name: "Jeans", price: 130, img: jeans, description: "Jeans modernos", sizes: ["XS", "S", "M", "L"] },
-    { id: 4, name: "Shorts", price: 100, img: shorts, description: "Shorts casuales", sizes: ["XS", "S", "M", "L"] },
-    { id: 5, name: "Bolsa", price: 110, img: bolsa, description: "Bolsa de moda", sizes: ["Única"] },
-    { id: 6, name: "Chaqueta", price: 170, img: chaqueta, description: "Chaqueta estilosa", sizes: ["XS", "S", "M", "L"] },
+    {
+      id: 1,
+      name: "Blusa",
+      price: 90,
+      img: blusa,
+      description: "Blusa elegante para mujer",
+      sizes: ["XS", "S", "M", "L"],
+    },
+    {
+      id: 2,
+      name: "Converse",
+      price: 150,
+      img: converse,
+      description: "Converse clásicos",
+      sizes: ["37", "38", "39", "40"],
+    },
+    {
+      id: 3,
+      name: "Jeans",
+      price: 130,
+      img: jeans,
+      description: "Jeans modernos",
+      sizes: ["XS", "S", "M", "L"],
+    },
+    {
+      id: 4,
+      name: "Shorts",
+      price: 100,
+      img: shorts,
+      description: "Shorts casuales",
+      sizes: ["XS", "S", "M", "L"],
+    },
+    {
+      id: 5,
+      name: "Bolsa",
+      price: 110,
+      img: bolsa,
+      description: "Bolsa de moda",
+      sizes: ["Única"],
+    },
+    {
+      id: 6,
+      name: "Chaqueta",
+      price: 170,
+      img: chaqueta,
+      description: "Chaqueta estilosa",
+      sizes: ["XS", "S", "M", "L"],
+    },
   ];
 
   const productos = [...productosLocales, ...productosDB];
@@ -128,11 +191,17 @@ function Girl() {
         ✕
       </button>
 
-      <button className="girl-mostrar" onClick={() => setMostrarCarrito(true)}>
+      <button
+        className="girl-mostrar"
+        onClick={() => setMostrarCarrito(true)}
+      >
         <FaShoppingBag />
       </button>
 
-      <button className="btn-create" onClick={() => navigate("/create?category=girl")}>
+      <button
+        className="btn-create"
+        onClick={() => navigate("/create?category=girl")}
+      >
         + Crear
       </button>
 
@@ -145,9 +214,51 @@ function Girl() {
               onClick={() => abrirProducto(producto)}
             >
               <button
-                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
-                onClick={(e) => {
+                className={`btn-favorito ${
+                  favoritos[producto.id] ? "activo" : ""
+                }`}
+                onClick={async (e) => {
                   e.stopPropagation();
+
+                  const {
+                    data: { user },
+                  } = await supabase.auth.getUser();
+
+                  if (!user) return;
+
+                  const favoritosGuardados = JSON.parse(
+                    localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+                  );
+
+                  const existe = favoritosGuardados.find(
+                    (item: any) => item.id === producto.id
+                  );
+
+                  let nuevosFavoritos;
+
+                  // ELIMINAR
+                  if (existe) {
+                    nuevosFavoritos = favoritosGuardados.filter(
+                      (item: any) => item.id !== producto.id
+                    );
+                  }
+
+                  // AGREGAR
+                  else {
+                    nuevosFavoritos = [
+                      ...favoritosGuardados,
+                      {
+                        ...producto,
+                        route: "/sessions/girl",
+                      },
+                    ];
+                  }
+
+                  localStorage.setItem(
+                    `misFavoritos_${user.id}`,
+                    JSON.stringify(nuevosFavoritos)
+                  );
+
                   setFavoritos({
                     ...favoritos,
                     [producto.id]: !favoritos[producto.id],
@@ -172,9 +283,14 @@ function Girl() {
             onClick={(e) => e.stopPropagation()}
           >
             <img src={productoActivo.img} />
+
             <h2>{productoActivo.name}</h2>
+
             <p>{productoActivo.description}</p>
-            <span className="girl-precio">$ {productoActivo.price}</span>
+
+            <span className="girl-precio">
+              $ {productoActivo.price}
+            </span>
 
             <div className="rating-temu-modal">
               {[1, 2, 3, 4, 5].map((estrella) => (
@@ -188,38 +304,55 @@ function Girl() {
                     })
                   }
                 >
-                  {calificaciones[productoActivo.id] >= estrella ? "★" : "☆"}
+                  {calificaciones[productoActivo.id] >= estrella
+                    ? "★"
+                    : "☆"}
                 </button>
               ))}
             </div>
 
-            <button onClick={agregarAlCarrito} className="girl-btn-carrito">
+            <button
+              onClick={agregarAlCarrito}
+              className="girl-btn-carrito"
+            >
               Agregar al carrito
             </button>
 
-            <button onClick={cerrarProducto} className="girl-btn-cerrar">
+            <button
+              onClick={cerrarProducto}
+              className="girl-btn-cerrar"
+            >
               ✕
             </button>
 
             <div className="girl-tallas">
-              {(productoActivo?.sizes || []).map((talla: string) => (
-                <button
-                  key={talla}
-                  className={`girl-talla-btn ${
-                    tallaSeleccionada === talla ? "active" : ""
-                  }`}
-                  onClick={() => setTallaSeleccionada(talla)}
-                >
-                  {talla}
-                </button>
-              ))}
+              {(productoActivo?.sizes || []).map(
+                (talla: string) => (
+                  <button
+                    key={talla}
+                    className={`girl-talla-btn ${
+                      tallaSeleccionada === talla
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setTallaSeleccionada(talla)
+                    }
+                  >
+                    {talla}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>
       )}
 
       {mostrarCarrito && (
-        <div className="girl-modal" onClick={() => setMostrarCarrito(false)}>
+        <div
+          className="girl-modal"
+          onClick={() => setMostrarCarrito(false)}
+        >
           <div
             className="girl-modal-content"
             onClick={(e) => e.stopPropagation()}
@@ -231,8 +364,16 @@ function Girl() {
             ) : (
               carrito.map((item, index) => (
                 <div key={index}>
-                  {item.name} - {item.talla} - ${item.price}
-                  <button onClick={() => eliminarProducto(index)}>X</button>
+                  {item.name} - {item.talla} - $
+                  {item.price}
+
+                  <button
+                    onClick={() =>
+                      eliminarProducto(index)
+                    }
+                  >
+                    X
+                  </button>
                 </div>
               ))
             )}

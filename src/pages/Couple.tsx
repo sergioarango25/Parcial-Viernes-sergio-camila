@@ -16,15 +16,22 @@ function Couple() {
 
   const [productoActivo, setProductoActivo] = useState<any>(null);
   const [carrito, setCarrito] = useState<any[]>([]);
-  const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null);
+  const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(
+    null
+  );
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
-  const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
+  const [calificaciones, setCalificaciones] = useState<{
+    [key: number]: number;
+  }>({});
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const data = localStorage.getItem("carrito_couple");
-    if (data) setCarrito(JSON.parse(data));
+
+    if (data) {
+      setCarrito(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
@@ -33,21 +40,40 @@ function Couple() {
 
   useEffect(() => {
     const data = localStorage.getItem("ratings_couple");
-    if (data) setCalificaciones(JSON.parse(data));
+
+    if (data) {
+      setCalificaciones(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("ratings_couple", JSON.stringify(calificaciones));
   }, [calificaciones]);
 
+  // FAVORITOS POR USUARIO
   useEffect(() => {
-    const data = localStorage.getItem("favoritos_couple");
-    if (data) setFavoritos(JSON.parse(data));
-  }, []);
+    const cargarFavoritos = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  useEffect(() => {
-    localStorage.setItem("favoritos_couple", JSON.stringify(favoritos));
-  }, [favoritos]);
+      if (!user) return;
+
+      const favoritosGuardados = JSON.parse(
+        localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+      );
+
+      const favoritosObjeto: { [key: number]: boolean } = {};
+
+      favoritosGuardados.forEach((item: any) => {
+        favoritosObjeto[item.id] = true;
+      });
+
+      setFavoritos(favoritosObjeto);
+    };
+
+    cargarFavoritos();
+  }, []);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -64,6 +90,7 @@ function Couple() {
               ? ["38", "39", "40", "41"]
               : ["S", "M", "L", "XL"],
         }));
+
         setProductosDB(conTallas);
       }
     };
@@ -72,12 +99,54 @@ function Couple() {
   }, []);
 
   const productosLocales = [
-    { id: 1, name: "Couple Set", price: 250, img: couple, description: "Set de ropa para parejas", sizes: ["S", "M", "L", "XL"] },
-    { id: 2, name: "Black Match", price: 200, img: black, description: "Outfit negro a juego", sizes: ["S", "M", "L", "XL"] },
-    { id: 3, name: "Blue Match", price: 200, img: blue, description: "Outfit azul a juego", sizes: ["S", "M", "L", "XL"] },
-    { id: 4, name: "Vans Couple", price: 180, img: vans, description: "Vans para parejas", sizes: ["38", "39", "40", "41"] },
-    { id: 5, name: "Llavero", price: 50, img: llavero, description: "Llavero para parejas", sizes: ["Único"] },
-    { id: 6, name: "Alfombra", price: 120, img: alfombra, description: "Alfombra especial para parejas", sizes: ["Único"] },
+    {
+      id: 1,
+      name: "Couple Set",
+      price: 250,
+      img: couple,
+      description: "Set de ropa para parejas",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 2,
+      name: "Black Match",
+      price: 200,
+      img: black,
+      description: "Outfit negro a juego",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 3,
+      name: "Blue Match",
+      price: 200,
+      img: blue,
+      description: "Outfit azul a juego",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 4,
+      name: "Vans Couple",
+      price: 180,
+      img: vans,
+      description: "Vans para parejas",
+      sizes: ["38", "39", "40", "41"],
+    },
+    {
+      id: 5,
+      name: "Llavero",
+      price: 50,
+      img: llavero,
+      description: "Llavero para parejas",
+      sizes: ["Único"],
+    },
+    {
+      id: 6,
+      name: "Alfombra",
+      price: 120,
+      img: alfombra,
+      description: "Alfombra especial para parejas",
+      sizes: ["Único"],
+    },
   ];
 
   const productos = [...productosLocales, ...productosDB];
@@ -126,11 +195,17 @@ function Couple() {
         ✕
       </button>
 
-      <button className="couple-mostrar" onClick={() => setMostrarCarrito(true)}>
+      <button
+        className="couple-mostrar"
+        onClick={() => setMostrarCarrito(true)}
+      >
         <FaShoppingBag />
       </button>
 
-      <button className="btn-create" onClick={() => navigate("/create?category=couple")}>
+      <button
+        className="btn-create"
+        onClick={() => navigate("/create?category=couple")}
+      >
         + Crear
       </button>
 
@@ -143,9 +218,53 @@ function Couple() {
               onClick={() => abrirProducto(producto)}
             >
               <button
-                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
-                onClick={(e) => {
+                className={`btn-favorito ${
+                  favoritos[producto.id] ? "activo" : ""
+                }`}
+                onClick={async (e) => {
                   e.stopPropagation();
+
+                  const {
+                    data: { user },
+                  } = await supabase.auth.getUser();
+
+                  if (!user) return;
+
+                  const favoritosGuardados = JSON.parse(
+                    localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+                  );
+
+                  const existe = favoritosGuardados.find(
+                    (item: any) => item.id === producto.id
+                  );
+
+                  let nuevosFavoritos;
+
+                  // ELIMINAR
+                  if (existe) {
+                    nuevosFavoritos = favoritosGuardados.filter(
+                      (item: any) => item.id !== producto.id
+                    );
+                  }
+
+                  // AGREGAR
+                  else {
+                    nuevosFavoritos = [
+                      ...favoritosGuardados,
+                      {
+                        ...producto,
+                        route: "/sessions/couple",
+                      },
+                    ];
+                  }
+
+                  // GUARDAR
+                  localStorage.setItem(
+                    `misFavoritos_${user.id}`,
+                    JSON.stringify(nuevosFavoritos)
+                  );
+
+                  // ESTADO VISUAL
                   setFavoritos({
                     ...favoritos,
                     [producto.id]: !favoritos[producto.id],
@@ -170,11 +289,15 @@ function Couple() {
             onClick={(e) => e.stopPropagation()}
           >
             <img src={productoActivo.img} />
-            <h2>{productoActivo.name}</h2>
-            <p>{productoActivo.description}</p>
-            <span className="couple-precio">$ {productoActivo.price}</span>
 
-            {/*  ESTRELLAS EN EL MODAL */}
+            <h2>{productoActivo.name}</h2>
+
+            <p>{productoActivo.description}</p>
+
+            <span className="couple-precio">
+              $ {productoActivo.price}
+            </span>
+
             <div className="rating-temu-modal">
               {[1, 2, 3, 4, 5].map((estrella) => (
                 <button
@@ -187,16 +310,24 @@ function Couple() {
                     })
                   }
                 >
-                  {calificaciones[productoActivo.id] >= estrella ? "★" : "☆"}
+                  {calificaciones[productoActivo.id] >= estrella
+                    ? "★"
+                    : "☆"}
                 </button>
               ))}
             </div>
 
-            <button onClick={agregarAlCarrito} className="couple-btn-carrito">
+            <button
+              onClick={agregarAlCarrito}
+              className="couple-btn-carrito"
+            >
               Agregar al carrito
             </button>
 
-            <button onClick={cerrarProducto} className="couple-btn-cerrar">
+            <button
+              onClick={cerrarProducto}
+              className="couple-btn-cerrar"
+            >
               ✕
             </button>
 
@@ -218,7 +349,10 @@ function Couple() {
       )}
 
       {mostrarCarrito && (
-        <div className="couple-modal" onClick={() => setMostrarCarrito(false)}>
+        <div
+          className="couple-modal"
+          onClick={() => setMostrarCarrito(false)}
+        >
           <div
             className="couple-modal-contenido"
             onClick={(e) => e.stopPropagation()}
@@ -230,8 +364,12 @@ function Couple() {
             ) : (
               carrito.map((item, index) => (
                 <div key={index}>
-                  {item.name} - {item.talla} - ${item.price}
-                  <button onClick={() => eliminarProducto(index)}>X</button>
+                  {item.name} - {item.talla} - $
+                  {item.price}
+
+                  <button onClick={() => eliminarProducto(index)}>
+                    X
+                  </button>
                 </div>
               ))
             )}

@@ -20,12 +20,14 @@ function Men() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
   const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
-
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const data = localStorage.getItem("carrito");
-    if (data) setCarrito(JSON.parse(data));
+
+    if (data) {
+      setCarrito(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
@@ -34,21 +36,41 @@ function Men() {
 
   useEffect(() => {
     const data = localStorage.getItem("ratings_men");
-    if (data) setCalificaciones(JSON.parse(data));
+
+    if (data) {
+      setCalificaciones(JSON.parse(data));
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("ratings_men", JSON.stringify(calificaciones));
+    localStorage.setItem(
+      "ratings_men",
+      JSON.stringify(calificaciones)
+    );
   }, [calificaciones]);
 
+  // CARGAR FAVORITOS DEL USUARIO
   useEffect(() => {
-    const data = localStorage.getItem("favoritos_men");
-    if (data) setFavoritos(JSON.parse(data));
-  }, []);
+    const cargarFavoritos = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  useEffect(() => {
-    localStorage.setItem("favoritos_men", JSON.stringify(favoritos));
-  }, [favoritos]);
+      const favoritosGuardados = JSON.parse(
+        localStorage.getItem(`misFavoritos_${user?.id}`) || "[]"
+      );
+
+      const favoritosObjeto: { [key: number]: boolean } = {};
+
+      favoritosGuardados.forEach((item: any) => {
+        favoritosObjeto[item.id] = true;
+      });
+
+      setFavoritos(favoritosObjeto);
+    };
+
+    cargarFavoritos();
+  }, []);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -74,12 +96,54 @@ function Men() {
   }, []);
 
   const productosLocales = [
-    { id: 1, name: "Chaqueta negra", price: 180, img: jacket, description: "Chaqueta negra de cuero perfecta", sizes: ["S","M","L","XL"] },
-    { id: 2, name: "Polo hombre", price: 120, img: polo, description: "Polo casual elegante", sizes: ["S","M","L","XL"] },
-    { id: 3, name: "Shorts", price: 130, img: shorts, description: "Shorts urbanos", sizes: ["38","39","40","41"] },
-    { id: 4, name: "Gorra", price: 90, img: gorra, description: "Gorra Brand New", sizes: ["S","M","L","XL"] },
-    { id: 5, name: "Angel", price: 125, img: angel, description: "Camiseta angel", sizes: ["S","M","L","XL"] },
-    { id: 6, name: "Zapatos", price: 200, img: shoes, description: "Zapatos urbanos", sizes: ["38","39","40","41"] },
+    {
+      id: 1,
+      name: "Chaqueta negra",
+      price: 180,
+      img: jacket,
+      description: "Chaqueta negra de cuero perfecta",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 2,
+      name: "Polo hombre",
+      price: 120,
+      img: polo,
+      description: "Polo casual elegante",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 3,
+      name: "Shorts",
+      price: 130,
+      img: shorts,
+      description: "Shorts urbanos",
+      sizes: ["38", "39", "40", "41"],
+    },
+    {
+      id: 4,
+      name: "Gorra",
+      price: 90,
+      img: gorra,
+      description: "Gorra Brand New",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 5,
+      name: "Angel",
+      price: 125,
+      img: angel,
+      description: "Camiseta angel",
+      sizes: ["S", "M", "L", "XL"],
+    },
+    {
+      id: 6,
+      name: "Zapatos",
+      price: 200,
+      img: shoes,
+      description: "Zapatos urbanos",
+      sizes: ["38", "39", "40", "41"],
+    },
   ];
 
   const productos = [...productosLocales, ...productosDB];
@@ -89,7 +153,9 @@ function Men() {
     setTallaSeleccionada(null);
   };
 
-  const cerrarProducto = () => setProductoActivo(null);
+  const cerrarProducto = () => {
+    setProductoActivo(null);
+  };
 
   const agregarAlCarrito = () => {
     if (!tallaSeleccionada) {
@@ -124,15 +190,24 @@ function Men() {
 
       <h1 className="men-title">Brand New for men</h1>
 
-      <button className="men-salida" onClick={() => navigate("/welcome")}>
+      <button
+        className="men-salida"
+        onClick={() => navigate("/welcome")}
+      >
         ✕
       </button>
 
-      <button className="men-mostrar" onClick={() => setMostrarCarrito(true)}>
+      <button
+        className="men-mostrar"
+        onClick={() => setMostrarCarrito(true)}
+      >
         <FaShoppingBag />
       </button>
 
-      <button className="btn-create" onClick={() => navigate("/create?category=men")}>
+      <button
+        className="btn-create"
+        onClick={() => navigate("/create?category=men")}
+      >
         + Crear
       </button>
 
@@ -145,16 +220,66 @@ function Men() {
               onClick={() => abrirProducto(producto)}
             >
               <button
-                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
-                onClick={(e) => {
+                className={`btn-favorito ${
+                  favoritos[producto.id] ? "activo" : ""
+                }`}
+                onClick={async (e) => {
                   e.stopPropagation();
+
+                  // OBTENER USUARIO
+                  const {
+                    data: { user },
+                  } = await supabase.auth.getUser();
+
+                  // FAVORITOS DEL USUARIO
+                  const favoritosGuardados = JSON.parse(
+                    localStorage.getItem(
+                      `misFavoritos_${user?.id}`
+                    ) || "[]"
+                  );
+
+                  // VERIFICAR SI EXISTE
+                  const existe = favoritosGuardados.find(
+                    (item: any) => item.id === producto.id
+                  );
+
+                  let nuevosFavoritos;
+
+                  // ELIMINAR
+                  if (existe) {
+                    nuevosFavoritos = favoritosGuardados.filter(
+                      (item: any) => item.id !== producto.id
+                    );
+                  }
+
+                  // AGREGAR
+                  else {
+                    nuevosFavoritos = [
+                      ...favoritosGuardados,
+                      {
+                        ...producto,
+                        route: "/sessions/men",
+                      },
+                    ];
+                  }
+
+                  // GUARDAR
+                  localStorage.setItem(
+                    `misFavoritos_${user?.id}`,
+                    JSON.stringify(nuevosFavoritos)
+                  );
+
+                  // ACTUALIZAR CORAZÓN
                   setFavoritos({
                     ...favoritos,
                     [producto.id]: !favoritos[producto.id],
                   });
                 }}
               >
-                <svg viewBox="0 0 24 24" className="icono-corazon">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="icono-corazon"
+                >
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </button>
@@ -172,9 +297,14 @@ function Men() {
             onClick={(e) => e.stopPropagation()}
           >
             <img src={productoActivo.img} />
+
             <h2>{productoActivo.name}</h2>
+
             <p>{productoActivo.description}</p>
-            <span className="men-precio">$ {productoActivo.price}</span>
+
+            <span className="men-precio">
+              $ {productoActivo.price}
+            </span>
 
             <div className="rating-temu-modal">
               {[1, 2, 3, 4, 5].map((estrella) => (
@@ -188,38 +318,55 @@ function Men() {
                     })
                   }
                 >
-                  {calificaciones[productoActivo.id] >= estrella ? "★" : "☆"}
+                  {calificaciones[productoActivo.id] >= estrella
+                    ? "★"
+                    : "☆"}
                 </button>
               ))}
             </div>
 
-            <button onClick={agregarAlCarrito} className="men-btn-carrito">
+            <button
+              onClick={agregarAlCarrito}
+              className="men-btn-carrito"
+            >
               Agregar al carrito
             </button>
 
-            <button onClick={cerrarProducto} className="men-btn-cerrar">
+            <button
+              onClick={cerrarProducto}
+              className="men-btn-cerrar"
+            >
               ✕
             </button>
 
             <div className="men-tallas">
-              {(productoActivo?.sizes || []).map((talla: string) => (
-                <button
-                  key={talla}
-                  className={`men-talla-btn ${
-                    tallaSeleccionada === talla ? "active" : ""
-                  }`}
-                  onClick={() => setTallaSeleccionada(talla)}
-                >
-                  {talla}
-                </button>
-              ))}
+              {(productoActivo?.sizes || []).map(
+                (talla: string) => (
+                  <button
+                    key={talla}
+                    className={`men-talla-btn ${
+                      tallaSeleccionada === talla
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setTallaSeleccionada(talla)
+                    }
+                  >
+                    {talla}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>
       )}
 
       {mostrarCarrito && (
-        <div className="men-modal" onClick={() => setMostrarCarrito(false)}>
+        <div
+          className="men-modal"
+          onClick={() => setMostrarCarrito(false)}
+        >
           <div
             className="men-modal-contenido"
             onClick={(e) => e.stopPropagation()}
@@ -231,8 +378,16 @@ function Men() {
             ) : (
               carrito.map((item, index) => (
                 <div key={index}>
-                  {item.name} - {item.talla} - ${item.price}
-                  <button onClick={() => eliminarProducto(index)}>X</button>
+                  {item.name} - {item.talla} - $
+                  {item.price}
+
+                  <button
+                    onClick={() =>
+                      eliminarProducto(index)
+                    }
+                  >
+                    X
+                  </button>
                 </div>
               ))
             )}

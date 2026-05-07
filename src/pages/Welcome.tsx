@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../supabase";
+import allProducts from "../data/allProducts";
 import "../styles/Welcome.css";
 
 import { FaUserCircle, FaHeart } from "react-icons/fa";
@@ -8,6 +9,7 @@ import { FaUserCircle, FaHeart } from "react-icons/fa";
 import menPromotion from "../assets/promotion/menPromotion.jpg";
 import couplePromotion from "../assets/promotion/couplePromotion.jpg";
 import hoodiePromotion from "../assets/promotion/hoodiePromotion.jpg";
+
 // secciones
 import girl from "../assets/girl-welcome.png";
 import men from "../assets/men-welcome.png";
@@ -15,8 +17,53 @@ import couple from "../assets/couple-welcome.png";
 
 function Welcome() {
   const navigate = useNavigate();
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
   const [fav, setFav] = useState(false);
+
+  const [favoritosGuardados, setFavoritosGuardados] = useState<any[]>([]);
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState<any>(null);
+
+  // OBTENER USUARIO
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        setUser(user);
+        setUserId(user.id);
+      }
+    };
+
+    getUser();
+  }, []);
+
+  // CARGAR FAVORITOS DEL USUARIO
+  useEffect(() => {
+    if (!userId) return;
+
+    const data = localStorage.getItem(`misFavoritos_${userId}`);
+
+    if (data) {
+      setFavoritosGuardados(JSON.parse(data));
+    } else {
+      setFavoritosGuardados([]);
+    }
+  }, [userId, fav]);
+
+  const productosFiltrados = allProducts.filter((producto) => {
+    const palabras = busqueda.toLowerCase().split(" ");
+
+    return palabras.every(
+      (palabra) =>
+        producto.name.toLowerCase().includes(palabra) ||
+        producto.category.toLowerCase().includes(palabra)
+    );
+  });
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -27,9 +74,40 @@ function Welcome() {
     <>
       <div className="menu">
         <div className="search-bar">
-          <input type="text" placeholder="Buscar..." />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+
+          {busqueda && (
+            <span className="clear-search" onClick={() => setBusqueda("")}>
+              ✕
+            </span>
+          )}
+
+          {busqueda && (
+            <div className="search-results">
+              {productosFiltrados.map((producto) => (
+                <div
+                  key={producto.id}
+                  className="search-item"
+                  onClick={() => navigate(producto.route)}
+                >
+                  <img src={producto.img} alt={producto.name} />
+
+                  <div>
+                    <h4>{producto.name}</h4>
+                    <p>{producto.category}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* USUARIO */}
         <div className="icon">
           <FaUserCircle
             className="icon"
@@ -38,20 +116,68 @@ function Welcome() {
 
           {menuOpen && (
             <div className="dropdown">
-              <button onClick={handleLogout}>Cerrar sesión</button>
+              <h3>
+                {user?.user_metadata?.name ||
+                  user?.email?.split("@")[0]}
+              </h3>
+
+              <button onClick={handleLogout}>
+                Cerrar sesión
+              </button>
             </div>
           )}
         </div>
 
+        {/* FAVORITOS */}
         <FaHeart className="corazon" onClick={() => setFav(!fav)} />
+
+        {fav && (
+          <div className="favorites-modal">
+            <h2>PRODUCTOS FAVORITOS</h2>
+
+            {favoritosGuardados.length === 0 ? (
+              <p>No tienes favoritos</p>
+            ) : (
+              favoritosGuardados.map((producto) => (
+                <div
+                  key={producto.id}
+                  className="favorite-item"
+                  onClick={() => navigate(producto.route)}
+                >
+                  <img src={producto.img} alt={producto.name} />
+
+                  <div>
+                    <h4>{producto.name}</h4>
+                    <p>${producto.price}</p>
+                  </div>
+                </div>
+              ))
+            )}
+
+            <h2 className="total-favoritos">
+              Total: $
+              {favoritosGuardados.reduce(
+                (total, producto) => total + producto.price,
+                0
+              )}
+            </h2>
+
+            <button className="pago">
+              Comprar
+            </button>
+          </div>
+        )}
       </div>
 
       <section>
         <div className="decorador1"></div>
       </section>
+
       <section>
         <div className="infoPromotion">
-          <h2>CONOCE LA NUEVA COLECCION EXCLUSIVA DE BRAND NEW</h2>
+          <h2>
+            CONOCE LA NUEVA COLECCION EXCLUSIVA DE BRAND NEW
+          </h2>
         </div>
       </section>
 
@@ -81,6 +207,7 @@ function Welcome() {
 
           <div className="texto">
             <p>Marca tu propio ritmo</p>
+
             <button onClick={() => navigate("/sessions/men")}>
               Haz click aquí
             </button>
@@ -97,6 +224,7 @@ function Welcome() {
 
           <div className="texto">
             <p>Dos estilos, una misma conexión</p>
+
             <button onClick={() => navigate("/sessions/couple")}>
               Haz click aquí
             </button>
@@ -113,6 +241,7 @@ function Welcome() {
 
           <div className="texto">
             <p>Elegancia y actitud pensadas para ella</p>
+
             <button onClick={() => navigate("/sessions/girl")}>
               Haz click aquí
             </button>
@@ -129,48 +258,76 @@ function Welcome() {
 
       <section>
         <footer className="informacion">
-          <h3>SOLO ESCOGE LA CATEGORÍA, EL ESTILO LO PONES TÚ</h3>
+          <h3>
+            SOLO ESCOGE LA CATEGORÍA, EL ESTILO LO PONES TÚ
+          </h3>
         </footer>
       </section>
 
-      {/* links de las paginas o de las categorias */}
-
+      {/* LINKS */}
       <section>
         <div className="contenido">
           <footer>
             <ul>
               <p className="lista">CATEGORIAS</p>
+
               <li>
                 <a href="/sessions/men">Hombres</a>
               </li>
+
               <li>
                 <a href="/sessions/girl">Mujeres</a>
               </li>
+
               <li>
                 <a href="/sessions/couple">Parejas</a>
               </li>
             </ul>
+
             <ul>
               <p className="lista">SOBRE NOSOTROS</p>
+
               <li>
-                <a href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://web.whatsapp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Contacto
                 </a>
               </li>
+
               <li>
-                <a href="/tiendas">Tiendas brand new</a>
+                <a href="/tiendas">
+                  Tiendas brand new
+                </a>
               </li>
             </ul>
+
             <ul>
-              <p className="lista">INFORMACION DE LA EMPRESA</p>
+              <p className="lista">
+                INFORMACION DE LA EMPRESA
+              </p>
+
               <li>
-                <a href="https://policies.google.com/privacy?hl=es" target="_blank">Politica de privacidad</a>
+                <a
+                  href="https://policies.google.com/privacy?hl=es"
+                  target="_blank"
+                >
+                  Politica de privacidad
+                </a>
               </li>
+
               <li>
-                <a href="https://policies.google.com/terms?hl=es" target="_blank">Terminos y condiciones</a>
+                <a
+                  href="https://policies.google.com/terms?hl=es"
+                  target="_blank"
+                >
+                  Terminos y condiciones
+                </a>
               </li>
             </ul>
-          </footer> 
+          </footer>
         </div>
       </section>
     </>
