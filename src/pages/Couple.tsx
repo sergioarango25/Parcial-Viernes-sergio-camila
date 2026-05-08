@@ -202,12 +202,6 @@ function Couple() {
         <FaShoppingBag />
       </button>
 
-      <button
-        className="btn-create"
-        onClick={() => navigate("/create?category=couple")}
-      >
-        + Crear
-      </button>
 
       <div className="couple-scroll">
         <section className="couple-contenedor-ropa">

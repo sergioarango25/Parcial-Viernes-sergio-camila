@@ -69,10 +69,6 @@ function Login() {
           REGISTRARSE
         </button>
 
-        <button className="olvidar-contraseña" type="button">
-          OLVIDÉ MI CONTRASEÑA
-        </button>
-
         {errorMsg && <p className="error">{errorMsg}</p>}
       </form>
     </div>

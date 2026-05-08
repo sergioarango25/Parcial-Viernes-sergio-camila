@@ -124,6 +124,22 @@ function Welcome() {
               <button onClick={handleLogout}>
                 Cerrar sesión
               </button>
+              <button onClick={() => navigate("/create")}>
+                Crear producto
+              </button>
+              <button onClick={() => navigate("/updateProduct")}>
+                Actualizar producto
+              </button>
+              <button onClick={() => navigate("/my-purchases")}>
+                Mis compras
+              </button>
+              <button onClick={() => navigate("/password")}>
+                Nueva contraseña
+              </button>
+              <button onClick={() => navigate("/")}>
+                Login
+              </button>
+
             </div>
           )}
         </div>

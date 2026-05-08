@@ -198,12 +198,6 @@ function Girl() {
         <FaShoppingBag />
       </button>
 
-      <button
-        className="btn-create"
-        onClick={() => navigate("/create?category=girl")}
-      >
-        + Crear
-      </button>
 
       <div className="girl-scroll">
         <section className="girl-contenedor-ropa">

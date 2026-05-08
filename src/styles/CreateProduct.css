@@ -15,6 +15,7 @@ html, body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 30px;
 }
 
 
@@ -22,11 +23,11 @@ html, body {
 /* HEADER */
 .header {
   position: fixed;
-  top: -35px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 4em;
+  font-size: 3em;
   letter-spacing: 2px;
   text-shadow: 0 10px 10px rgba(0, 0, 0, 0.7);
 }
@@ -44,7 +45,7 @@ html, body {
   justify-content: center;
   width: 500px;
   height: auto;
-  padding: 30px;
+  padding: 10px;
   border: 2px solid white;
   border-radius: 15px;
   backdrop-filter: blur(25px);
@@ -61,29 +62,17 @@ html, body {
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
-/* TITULO */
-.title-create h1 {
-  color: white;
-  font-size: 3em;
-  letter-spacing: 4px;
-  text-shadow: 5px 1px 0 black;
-  margin-bottom: 20px;
-}
 
 /* INPUTS */
 .input-create {
   width: 350px;
   margin: 10px;
   padding: 10px;
-
   border: none;
-  border-radius: 7px;
-
-  font-size: 1.3em;
+  border-radius: 5px;
+  font-size: 1.2em;
   font-family: "Bebas Neue";
-
   box-shadow: 0 10px 5px rgba(0, 0, 0, 0.5);
-
   transition: 0.3s ease;
 }
 
@@ -100,18 +89,15 @@ html, body {
 }
 
 .crear {
-    width: 120px;
     height: 55px;
+    margin: 10px;
     border: 2px solid white;
     border-radius: 15px;
-    color: black;
+    color: white;
+    background: transparent;
     font-size: 1.8em;
     font-family: "Bebas Neue";
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.crear:hover {
-    transform: scale(1.05);
-}

@@ -8,6 +8,7 @@ import Girl from "./pages/Girl";
 import CreateProduct from "./pages/CreateProduct";
 import ProtectedRoute from "./ProtectedRoute";
 import Tiendas from "./pages/Tiendas";
+import Password from "./pages/password";
 
 function App() {
   return (
@@ -70,7 +71,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/password"
+          element={
+            <ProtectedRoute>
+              <Password />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+
     </BrowserRouter>
   );
 }

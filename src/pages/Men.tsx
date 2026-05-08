@@ -204,13 +204,6 @@ function Men() {
         <FaShoppingBag />
       </button>
 
-      <button
-        className="btn-create"
-        onClick={() => navigate("/create?category=men")}
-      >
-        + Crear
-      </button>
-
       <div className="men-scroll">
         <section className="men-contenedor-ropa">
           {productos.map((producto, index) => (
@@ -362,38 +355,107 @@ function Men() {
         </div>
       )}
 
-      {mostrarCarrito && (
-        <div
-          className="men-modal"
+{mostrarCarrito && (
+  <div
+    className="cart-overlay"
+    onClick={() => setMostrarCarrito(false)}
+  >
+    <div
+      className="cart-container"
+      onClick={(e) => e.stopPropagation()}
+    >
+
+      {/* HEADER */}
+      <div className="cart-header">
+
+        <h2>Tu carrito de compras <br /> Brand New</h2>
+
+        <button
+          className="cart-close"
           onClick={() => setMostrarCarrito(false)}
         >
-          <div
-            className="men-modal-contenido"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Tu carrito</h2>
+          ✕
+        </button>
+      </div>
 
-            {carrito.length === 0 ? (
-              <p>Vacío</p>
-            ) : (
-              carrito.map((item, index) => (
-                <div key={index}>
-                  {item.name} - {item.talla} - $
-                  {item.price}
+      {/* CARRITO VACÍO */}
+      {carrito.length === 0 ? (
+
+        <div className="cart-empty">
+          <h3>Tu carrito está vacío</h3>
+
+          <p>
+            Agrega productos increíbles solamente en brand new
+          </p>
+        </div>
+
+      ) : (
+
+        <>
+          {/* PRODUCTOS */}
+          <div className="cart-items">
+
+            {carrito.map((item, index) => (
+
+              <div
+                key={index}
+                className="cart-item"
+              >
+
+                {/* INFO */}
+                <div className="cart-info">
+
+                  <h3>{item.name}</h3>
+
+                  <p>
+                    Talla:
+                    <span> {item.talla}</span>
+                  </p>
+
+                </div>
+
+                {/* DERECHA */}
+                <div className="cart-right">
+
+                  <span className="cart-price">
+                    $ {item.price}
+                  </span>
 
                   <button
+                    className="cart-delete"
                     onClick={() =>
                       eliminarProducto(index)
                     }
                   >
-                    X
+                    Eliminar
                   </button>
+
                 </div>
-              ))
-            )}
+              </div>
+            ))}
           </div>
-        </div>
+
+          {/* FOOTER */}
+          <div className="cart-footer">
+
+            <h3>
+              Total: $
+              {carrito.reduce(
+                (acc, item) => acc + item.price,
+                0
+              )}
+            </h3>
+
+            <button className="cart-buy">
+              Finalizar compra
+            </button>
+
+          </div>
+        </>
       )}
+    </div>
+  </div>
+)}
     </>
   );
 }
