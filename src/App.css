@@ -84,6 +84,7 @@ button:disabled {
   padding: 20px;
   border-radius: 10px;
   height: fit-content;
+<<<<<<< HEAD
 }
 .error{
   color: red;
@@ -103,4 +104,6 @@ button:disabled {
 .form input:focus{
   outline: none;
   border: 1px solid #3483fa;
+=======
+>>>>>>> 4d32e145e864c1bd17ff20d1db3aa75c3b15d420
 }
