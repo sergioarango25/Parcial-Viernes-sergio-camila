@@ -4,7 +4,9 @@ html, body {
   overflow: hidden;
   height: 100%;
   font-family: "Bebas Neue";
-  background-color: black;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 35%),
+    linear-gradient(135deg, #050505, #111, #050505);
 }
 
 /* CONTENEDOR GENERAL */
@@ -15,21 +17,30 @@ html, body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 30px;
 }
-
-
 
 /* HEADER */
 .header {
   position: fixed;
-  top: -10px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 3em;
-  letter-spacing: 2px;
-  text-shadow: 0 10px 10px rgba(0, 0, 0, 0.7);
+  font-size: 3.2em;
+  letter-spacing: 4px;
+  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.9);
+  z-index: 10;
+}
+
+.header::after {
+  content: "";
+  display: block;
+  width: 70%;
+  height: 2px;
+  margin: 8px auto 0;
+  background: white;
+  border-radius: 20px;
+  opacity: 0.8;
 }
 
 .header:hover {
@@ -37,67 +48,128 @@ html, body {
   transition: 0.3s ease;
 }
 
-/* BOX GLASS */
+
 .box-create {
+  width: 500px;
+  height: auto;
+  padding: 35px 25px;
+  margin-top: 80px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 500px;
-  height: auto;
-  padding: 10px;
-  border: 2px solid white;
-  border-radius: 15px;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 25px;
+
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
   box-shadow:
-    15px 20px 5px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    0 25px 55px rgba(0, 0, 0, 0.75),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);
+
   transition: 0.3s ease;
 }
 
 .box-create:hover {
+  transform: translateY(-4px);
   box-shadow:
-    0 0 25px rgba(0, 0, 0, 0.9),
+    0 30px 65px rgba(0, 0, 0, 0.9),
+    0 0 25px rgba(255, 255, 255, 0.12),
     inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
-
 /* INPUTS */
 .input-create {
-  width: 350px;
-  margin: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.2em;
-  font-family: "Bebas Neue";
-  box-shadow: 0 10px 5px rgba(0, 0, 0, 0.5);
-  transition: 0.3s ease;
-}
+  width: 370px;
+  height: 48px;
+  margin: 11px;
+  padding: 0 16px;
 
-.input-create:focus {
-  outline: none;
-  border: 2px solid black;
-  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.92);
+  color: black;
+
+  font-size: 1.25em;
+  font-family: "Bebas Neue";
+
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.45);
+  transition: 0.3s ease;
 }
 
 .input-create::placeholder {
   font-family: "Bebas Neue";
-  color: black;
-  font-size: 1.2rem;
+  color: #333;
+  font-size: 1.1rem;
 }
 
+.input-create:focus {
+  outline: none;
+  border: 1px solid white;
+  transform: scale(1.02);
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.22),
+    0 10px 22px rgba(0, 0, 0, 0.6);
+}
+
+/* BOTON CREAR */
 .crear {
-    height: 55px;
-    margin: 10px;
-    border: 2px solid white;
-    border-radius: 15px;
-    color: white;
-    background: transparent;
-    font-size: 1.8em;
-    font-family: "Bebas Neue";
-    letter-spacing: 3px;
-    cursor: pointer;
+  width: 190px;
+  height: 55px;
+  margin-top: 20px;
+
+  border: 2px solid white;
+  border-radius: 30px;
+
+  color: black;
+  background: white;
+
+  font-size: 1.8em;
+  font-family: "Bebas Neue";
+  letter-spacing: 3px;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.55);
 }
 
+.crear:hover {
+  color: white;
+  background: black;
+  border-color: white;
+
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow:
+    0 18px 35px rgba(0, 0, 0, 0.8),
+    0 0 18px rgba(255, 255, 255, 0.25);
+}
+
+/* RESPONSIVE */
+@media (max-width: 650px) {
+  .header {
+    font-size: 2.4em;
+    text-align: center;
+    width: 90%;
+  }
+
+  .box-create {
+    width: 85%;
+    padding: 30px 15px;
+  }
+
+  .input-create {
+    width: 85%;
+  }
+
+  .crear {
+    width: 170px;
+    font-size: 1.6em;
+  }
+}

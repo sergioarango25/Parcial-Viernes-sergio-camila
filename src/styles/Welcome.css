@@ -3,7 +3,8 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-y: visible !important; /* Obliga a mostrar el scroll si el contenido rebasa */
+  overflow-y: visible !important;
+  background: #050505;
 }
 
 .infoPromotion{
@@ -23,33 +24,31 @@ html, body {
 .promociones {
   display: flex;
   margin: 6% 2%;
+  gap: 20px;
 }
 
 .promotion {
   flex: 1;
   overflow: hidden;
-  box-shadow: 0 5px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
   cursor: pointer;
+  border-radius: 18px;
 }
-
 
 .promotion img {
   width: 100%;
   height: 500px;
   object-fit: cover;
-  border-top: 5px solid red;
-  border-bottom: 5px solid red;
+  border: none;
   transition: transform 0.5s ease;
-
 }
 
 .promotion:hover img {
   transform: scale(1.05);
 }
 
-/*  Contenedor principal */
 .cartas {
-position: relative; 
+  position: relative; 
   margin-top: 18%; 
   margin-left: 2%;
   margin-right: 2%;
@@ -60,7 +59,6 @@ position: relative;
   min-height: 80vh;  
 }
 
-/*  Cards */
 .card1, .card2, .card3 {
   flex: 1;
   display: flex;
@@ -69,20 +67,20 @@ position: relative;
   height: 100%;
 }
 
-/*  Imágenes */
 .men-welcome,
 .couple-welcome,
 .girl-welcome {
   width: 100%;
   height: 75%;
   object-fit: contain;
-  border: 2px solid white;
-  box-shadow: 0 5px 2px rgba(0, 0, 0, 0.8);
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 18px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8);
   cursor: pointer;  
   transition: transform 0.5s ease;
 }
 
-/*  Hover imagen */
 .card1:hover .men-welcome,
 .card2:hover .couple-welcome,
 .card3:hover .girl-welcome {
@@ -90,7 +88,6 @@ position: relative;
   transform: scale(1.05);
 }
 
-/*  Texto abajo */
 .texto {
   height: 25%;
   display: flex;
@@ -102,40 +99,35 @@ position: relative;
   text-align: center;
 }
 
-/* Frase */
 .texto p {
   color: white;
   font-family: 'Bebas Neue';
   font-size: 1.6rem;
   margin-bottom: 10px;
   padding: 10px;
-  border: 1px solid black;
+  border: none;
   border-radius: 5px;
   z-index: 100;
 }
 
-/*  Botón */
 .texto button {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 8px 15px;
+  background: white;
+  border: 2px solid white;
+  color: black;
+  padding: 10px 24px;
   font-size: 1.2rem;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 25px;
   font-family: "Bebas Neue";
   transition: all 0.3s ease;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .texto button:hover {
-  transform: scale(1.1);
+  background: black;
+  color: white;
+  transform: scale(1.08);
 }
-
-.men-welcome { background: yellow; }
-.couple-welcome { background: red; }
-.girl-welcome { background: blue; }
-
 
 .decorador1 {
   position: static;
@@ -144,7 +136,7 @@ position: relative;
   width: 100%;
   height: 95px;
   background: black;
-  border-bottom: 2px solid white;
+  border-bottom: 1px solid #333;
   z-index: 1;
 }
 
@@ -168,10 +160,6 @@ position: relative;
   z-index: 20;
 }
 
-
-
-
-
 .corazon {
   position: absolute;
   top: 30%;
@@ -180,7 +168,7 @@ position: relative;
   color: white;
   cursor: pointer;
   transition: 0.3s;
-  border: none  ;
+  border: none;
 }
 
 .icon {
@@ -195,6 +183,10 @@ position: relative;
   border: none;
 }
 
+.icon:hover,
+.corazon:hover {
+  color: #d90429;
+}
 
 .titulo {
   position: absolute;
@@ -216,18 +208,16 @@ position: relative;
   font-size: 1rem;
 }
 
-
 .informacion h3 {
   position: absolute;
   top: 140%;
   left: 50%;
   color: white;  
-  border-top: 2px solid white;
+  border-top: 1px solid #333;
   width: 100%;
   transform: translate(-50%, -50%);
   font-family: "Bebas Neue";
   padding: 40px;
-  font-family: "Bebas Neue";
   text-align: center;
   font-size: 1.5rem;
 }
@@ -238,9 +228,8 @@ position: relative;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  border-top: 2px solid white;
+  border-top: 1px solid #333;
 }
-
 
 p {
   font-family: "Bebas Neue";
@@ -255,7 +244,6 @@ p {
   width: 100%;
 }
 
-
 .contenido ul {
   margin: 50px;
   font-size: 1.2rem;
@@ -269,34 +257,25 @@ p {
   margin: 40px;
 }
 
-
 .contenido a {
   color: white;
   text-decoration: none;
 }
 
 .contenido a:hover {
-  transform: scale(1.2);
-  color: white;
+  color: #d90429;
   text-decoration: underline;
 }
-
-
-/* apartado de tamaño de items a la hora de buscar en la barra de busqueda, para que no se desconfigure el diseño de la pagina. */
 
 .search-bar input {
   width: 250px;
   padding: 10px;
-  padding-right: 50px;
-  border-radius: 10px;
+  padding-right: 40px;
+  border-radius: 20px;
   border: none;
   outline: none;
   font-size: 25px;
   font-family: "Bebas Neue";
-}
-
-.search-bar input {
-  padding-right: 40px;
 }
 
 .search-bar {
@@ -306,10 +285,8 @@ p {
   align-items: center;
 }
 
-
-
 .clear-search {  
- position: absolute;
+  position: absolute;
   right: 32px;
   top: 50%;
   transform: translateY(-50%);
@@ -321,20 +298,19 @@ p {
   user-select: none;
 }
 
-
 .search-results {
   position: absolute;
   top: 80px;
   right: 0;
   width: 150%;
   background: white;
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   z-index: 20;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
   max-height: 300px;
   overflow-y: auto;
 }
@@ -377,8 +353,6 @@ p {
   text-align: center;
 }
 
-
-
 .favorites-modal {
   position: absolute;
   top: 100px;
@@ -387,10 +361,10 @@ p {
   max-height: 400px;
   overflow-y: auto;
   background: white;
-  border-radius: 5px;
+  border-radius: 18px;
   padding: 20px;
   z-index: 999;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .favorite-item {
@@ -430,16 +404,17 @@ p {
   align-items: center;
   margin-top: 20px;
   font-size: 24px;
-  color: red;
+  color: #d90429;
 }
+
 .pago {
   width: 100%;
   padding: 15px;
   margin-top: 20px;
-  border: none;
+  border: 2px solid black;
   border-radius: 15px;
-  background: white;
-  color: black;
+  background: black;
+  color: white;
   font-size: 25px;
   font-family: "Bebas Neue";
   cursor: pointer;
@@ -447,6 +422,8 @@ p {
 }
 
 .pago:hover {
+  background: white;
+  color: black;
   transform: scale(1.03);
 }
 
@@ -458,11 +435,11 @@ p {
   flex-direction: column;
   align-items: center;
   background: white;
-  border-radius: 10px;
+  border-radius: 18px;
   height: auto;
   width: 350px;
   border: 2px solid white;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .dropdown button {
@@ -476,7 +453,7 @@ p {
   font-family: "Bebas Neue";
   font-size: large;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 12px;
 }
 
 .dropdown button:hover {
@@ -484,11 +461,131 @@ p {
   color: white;
 }
 
-
 .dropdown h3{
   color: black;
   font-size: 25px;
   cursor: default;
   margin: 10px;
   text-align: center;
+}
+
+/* MODAL PROMOCIONES */
+.welcome-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  z-index: 2000;
+}
+
+.welcome-modal-content {
+  position: relative;
+  width: 900px;
+  max-width: 95vw;
+  height: 520px;
+  background: white;
+  color: black;
+  border-radius: 22px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 0 35px rgba(255,255,255,0.25);
+  animation: modalWelcome 0.3s ease;
+}
+
+.welcome-modal-img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.welcome-modal-info {
+  padding: 45px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.welcome-modal-info h2 {
+  margin: 0;
+  color: black;
+  font-family: "Bebas Neue";
+  font-size: 3rem;
+}
+
+.welcome-modal-info p {
+  margin: 0;
+  color: #222;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.welcome-buy-button {
+  border: 2px solid black;
+  border-radius: 25px;
+  background: black;
+  color: white;
+  padding: 14px 25px;
+  font-family: "Bebas Neue";
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.welcome-buy-button:hover {
+  background: white;
+  color: black;
+  transform: scale(1.04);
+}
+
+.welcome-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.welcome-modal-close:hover {
+  background: #d90429;
+  transform: scale(1.08);
+}
+
+@keyframes modalWelcome {
+  from {
+    transform: scale(0.88);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .welcome-modal-content {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .welcome-modal-img {
+    height: 300px;
+  }
 }
