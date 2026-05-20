@@ -92,27 +92,19 @@
   background: white;
   color: black;
   border: 2px solid black;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
 }
 
-.btn-create:active {
-  transform: scale(0.98);
-}
-
-/* 🔥 CONTENEDOR SCROLL */
+/* SCROLL */
 .couple-scroll {
   position: fixed;
   top: 90px;
   left: 0;
   width: 100%;
   height: calc(100vh - 90px);
-
   overflow-y: auto;
   overflow-x: hidden;
-
   display: flex;
   justify-content: center;
-
   z-index: 5;
 }
 
@@ -122,7 +114,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 50px;
-
   padding: 40px 0 80px 0;
 }
 
@@ -131,19 +122,12 @@
   background-color: white;
   height: 180px;
   border-radius: 14px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  color: #999;
-  font-family: "Bebas Neue";
-  font-size: 1.5em;
-
   box-shadow: 0 10px 5px rgba(0, 0, 0, 10);
   transition: transform 0.3s ease;
   cursor: pointer;
-
   position: relative;
 }
 
@@ -156,49 +140,30 @@
 
 .couple-card:hover {
   border: 2px solid yellow;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 10);
   transform: scale(1.1);
 }
 
-/* CORAZÓN  */
+/* FAVORITOS */
 .btn-favorito {
   position: absolute;
   top: 10px;
   right: 10px;
-
   width: 42px;
   height: 42px;
-
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.12);
-
   background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   z-index: 10;
-
   opacity: 0;
-  transform: scale(0.85) translateY(-4px);
   transition: all 0.25s ease;
-
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
 }
 
 .couple-card:hover .btn-favorito {
   opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-.btn-favorito:hover {
-  transform: scale(1.12);
-  background: white;
-  border-color: rgba(255, 77, 109, 0.45);
-  box-shadow: 0 8px 22px rgba(255, 77, 109, 0.25);
 }
 
 .icono-corazon {
@@ -207,7 +172,6 @@
   fill: transparent;
   stroke: #ff4d6d;
   stroke-width: 2;
-  transition: all 0.25s ease;
 }
 
 .btn-favorito.activo .icono-corazon {
@@ -223,7 +187,7 @@
   margin: 10px 0;
 }
 
-/* ⭐ RATING EN MODAL */
+/* RATING */
 .rating-temu-modal {
   display: flex;
   justify-content: center;
@@ -237,11 +201,6 @@
   color: gold;
   font-size: 28px;
   cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.rating-star-modal:hover {
-  transform: scale(1.3);
 }
 
 /* MODAL */
@@ -249,11 +208,9 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   z-index: 999;
 }
 
@@ -262,13 +219,9 @@
   background: white;
   padding: 20px;
   border-radius: 10px;
-
   max-width: 525px;
   width: 90%;
-
   border: 2px solid black;
-  box-shadow: 0 0 15px white;
-
   text-align: center;
   animation: zoomIn 0.35s ease;
 }
@@ -287,36 +240,27 @@
 }
 
 .couple-modal-contenido p {
-  font-family: Arial, sans-serif;
   font-size: 1.1em;
   color: #333;
-  margin: 10px 0;
 }
 
 /* BOTONES MODAL */
 .couple-btn-carrito {
-  margin-top: 15px;
   margin: 10px;
   padding: 8px 20px;
-
   border: none;
   background: black;
   color: white;
-
   font-family: "Bebas Neue";
   font-size: 1.5em;
-
   cursor: pointer;
   border-radius: 10px;
-
-  transition: all 0.3s ease;
 }
 
 .couple-btn-carrito:hover {
   background: white;
   color: black;
   border: 2px solid black;
-  transform: scale(1.1);
 }
 
 .couple-btn-cerrar {
@@ -330,7 +274,6 @@
 }
 
 .couple-btn-cerrar:hover {
-  transform: scale(1.8);
   color: red;
 }
 
@@ -347,28 +290,136 @@
 .couple-talla-btn {
   width: 60px;
   padding: 10px;
-
   border: 2px solid black;
-  color: black;
   background: white;
-
   font-family: "Bebas Neue";
-  font-size: 1.3em;
-
   cursor: pointer;
   border-radius: 8px;
-
-  transition: all 0.25s ease;
 }
 
-.couple-talla-btn.active {
-  background: black;
-  color: white;
-}
-
+.couple-talla-btn.active,
 .couple-talla-btn:hover {
   background: black;
   color: white;
+}
+
+/* =========================
+   CARRITO PREMIUM
+========================= */
+
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 9999;
+}
+
+.cart-container {
+  width: 420px;
+  max-width: 95%;
+  height: 100vh;
+  background: white;
+  color: black;
+  padding: 25px;
+  overflow-y: auto;
+  box-shadow: -10px 0 35px rgba(0,0,0,.5);
+  animation: cartSlide .3s ease;
+}
+
+.cart-header,
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-header {
+  margin-bottom: 25px;
+}
+
+.cart-header h2,
+.cart-info h3,
+.cart-footer h3,
+.cart-empty h3 {
+  margin: 0;
+  font-family: "Bebas Neue";
+  color: black;
+}
+
+.cart-close {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cart-item {
+  padding: 16px;
+  border-radius: 18px;
+  background: #f3f3f3;
+}
+
+.cart-info p,
+.cart-empty p {
+  color: #555;
+}
+
+.cart-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.cart-price {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.cart-delete {
+  border: none;
+  border-radius: 20px;
+  padding: 8px 12px;
+  background: #ff2b2b;
+  color: white;
+  cursor: pointer;
+}
+
+.cart-buy {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 25px;
+  background: black;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart-footer {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 45px 10px;
+  border: 1px dashed #bbb;
+  border-radius: 18px;
 }
 
 /* ANIMACIONES */
@@ -380,4 +431,9 @@
 @keyframes zoomIn {
   from { transform: scale(0.7); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes cartSlide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }

@@ -99,7 +99,7 @@
   transform: scale(0.98);
 }
 
-/* 🔥 CONTENEDOR SCROLL */
+/* CONTENEDOR */
 .girl-scroll {
   position: fixed;
   top: 90px;
@@ -151,7 +151,7 @@
   transform: scale(1.1);
 }
 
-/*  CORAZÓN  */
+/* FAVORITOS */
 .btn-favorito {
   position: absolute;
   top: 10px;
@@ -199,7 +199,7 @@
   stroke: #ff4d6d !important;
 }
 
-/* ⭐ RATING */
+/* RATING */
 .rating-temu {
   position: absolute;
   top: 8px;
@@ -343,6 +343,22 @@
 .girl-talla-btn:hover {
   background: black;
   color: white;
+}
+
+/* CARRITO */
+.cart-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  background: white;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 /* ANIMACIONES */

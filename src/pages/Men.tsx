@@ -23,11 +23,48 @@ function Men() {
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
-    const data = localStorage.getItem("carrito");
+    setCarrito(JSON.parse(localStorage.getItem("carrito") || "[]"));
+    setCalificaciones(JSON.parse(localStorage.getItem("ratings_men") || "{}"));
 
-    if (data) {
-      setCarrito(JSON.parse(data));
-    }
+    const cargarFavoritos = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const guardados = JSON.parse(
+        localStorage.getItem(`misFavoritos_${user?.id}`) || "[]"
+      );
+
+      const objeto: { [key: number]: boolean } = {};
+
+      guardados.forEach((item: any) => {
+        objeto[item.id] = true;
+      });
+
+      setFavoritos(objeto);
+    };
+
+    const cargarProductos = async () => {
+      const { data, error } = await supabase
+        .from("productos")
+        .select("*")
+        .eq("category", "men");
+
+      if (!error && data) {
+        setProductosDB(
+          data.map((p: any) => ({
+            ...p,
+            sizes:
+              p.type === "zapatos"
+                ? ["38", "39", "40", "41"]
+                : ["S", "M", "L", "XL"],
+          }))
+        );
+      }
+    };
+
+    cargarFavoritos();
+    cargarProductos();
   }, []);
 
   useEffect(() => {
@@ -35,64 +72,11 @@ function Men() {
   }, [carrito]);
 
   useEffect(() => {
-    const data = localStorage.getItem("ratings_men");
-
-    if (data) {
-      setCalificaciones(JSON.parse(data));
-    }
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem(
       "ratings_men",
       JSON.stringify(calificaciones)
     );
   }, [calificaciones]);
-
-  useEffect(() => {
-    const cargarFavoritos = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      const favoritosGuardados = JSON.parse(
-        localStorage.getItem(`misFavoritos_${user?.id}`) || "[]"
-      );
-
-      const favoritosObjeto: { [key: number]: boolean } = {};
-
-      favoritosGuardados.forEach((item: any) => {
-        favoritosObjeto[item.id] = true;
-      });
-
-      setFavoritos(favoritosObjeto);
-    };
-
-    cargarFavoritos();
-  }, []);
-
-  useEffect(() => {
-    const fetchProductos = async () => {
-      const { data, error } = await supabase
-        .from("productos")
-        .select("*")
-        .eq("category", "men");
-
-      if (!error && data) {
-        const conTallas = data.map((p: any) => ({
-          ...p,
-          sizes:
-            p.type === "zapatos"
-              ? ["38", "39", "40", "41"]
-              : ["S", "M", "L", "XL"],
-        }));
-
-        setProductosDB(conTallas);
-      }
-    };
-
-    fetchProductos();
-  }, []);
 
   const productosLocales = [
     {
@@ -152,9 +136,7 @@ function Men() {
     setTallaSeleccionada(null);
   };
 
-  const cerrarProducto = () => {
-    setProductoActivo(null);
-  };
+  const cerrarProducto = () => setProductoActivo(null);
 
   const agregarAlCarrito = () => {
     if (!tallaSeleccionada) {
@@ -168,6 +150,7 @@ function Men() {
         name: productoActivo.name,
         price: productoActivo.price,
         talla: tallaSeleccionada,
+        img: productoActivo.img,
       },
     ]);
 
@@ -175,9 +158,7 @@ function Men() {
   };
 
   const eliminarProducto = (index: number) => {
-    const nuevo = [...carrito];
-    nuevo.splice(index, 1);
-    setCarrito(nuevo);
+    setCarrito(carrito.filter((_, i) => i !== index));
   };
 
   return (
@@ -215,54 +196,8 @@ function Men() {
                 className={`btn-favorito ${
                   favoritos[producto.id] ? "activo" : ""
                 }`}
-                onClick={async (e) => {
-                  e.stopPropagation();
-
-                  const {
-                    data: { user },
-                  } = await supabase.auth.getUser();
-
-                  const favoritosGuardados = JSON.parse(
-                    localStorage.getItem(
-                      `misFavoritos_${user?.id}`
-                    ) || "[]"
-                  );
-
-                  const existe = favoritosGuardados.find(
-                    (item: any) => item.id === producto.id
-                  );
-
-                  let nuevosFavoritos;
-
-                  if (existe) {
-                    nuevosFavoritos = favoritosGuardados.filter(
-                      (item: any) => item.id !== producto.id
-                    );
-                  } else {
-                    nuevosFavoritos = [
-                      ...favoritosGuardados,
-                      {
-                        ...producto,
-                        route: "/sessions/men",
-                      },
-                    ];
-                  }
-
-                  localStorage.setItem(
-                    `misFavoritos_${user?.id}`,
-                    JSON.stringify(nuevosFavoritos)
-                  );
-
-                  setFavoritos({
-                    ...favoritos,
-                    [producto.id]: !favoritos[producto.id],
-                  });
-                }}
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="icono-corazon"
-                >
+                <svg viewBox="0 0 24 24" className="icono-corazon">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </button>
@@ -288,34 +223,6 @@ function Men() {
             <span className="men-precio">
               $ {productoActivo.price}
             </span>
-
-            <div className="rating-temu-modal">
-              {[1, 2, 3, 4, 5].map((estrella) => (
-                <button
-                  key={estrella}
-                  className="rating-star-modal"
-                  onClick={() =>
-                    setCalificaciones({
-                      ...calificaciones,
-                      [productoActivo.id]:
-                        calificaciones[productoActivo.id] === estrella
-                          ? estrella - 0.5
-                          : estrella,
-                    })
-                  }
-                >
-                  {calificaciones[productoActivo.id] >= estrella
-                    ? "★"
-                    : calificaciones[productoActivo.id] >= estrella - 0.5
-                    ? "⯨"
-                    : "☆"}
-                </button>
-              ))}
-            </div>
-
-            <p className="rating-numero">
-              {calificaciones[productoActivo.id] || 0} / 5
-            </p>
 
             <button
               onClick={agregarAlCarrito}
@@ -364,7 +271,7 @@ function Men() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="cart-header">
-              <h2>Tu carrito de compras <br /> Brand New</h2>
+              <h2>Tu carrito</h2>
 
               <button
                 className="cart-close"
@@ -378,9 +285,7 @@ function Men() {
               <div className="cart-empty">
                 <h3>Tu carrito está vacío</h3>
 
-                <p>
-                  Agrega productos increíbles solamente en brand new
-                </p>
+                <p>Agrega productos increíbles</p>
               </div>
             ) : (
               <>
@@ -390,13 +295,20 @@ function Men() {
                       key={index}
                       className="cart-item"
                     >
-                      <div className="cart-info">
-                        <h3>{item.name}</h3>
+                      <div className="cart-left">
+                        <img
+                          src={item.img}
+                          className="cart-img"
+                        />
 
-                        <p>
-                          Talla:
-                          <span> {item.talla}</span>
-                        </p>
+                        <div className="cart-info">
+                          <h3>{item.name}</h3>
+
+                          <p>
+                            Talla:
+                            <span> {item.talla}</span>
+                          </p>
+                        </div>
                       </div>
 
                       <div className="cart-right">
