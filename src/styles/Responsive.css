@@ -1,0 +1,344 @@
+/* computador  */
+
+@media (max-width: 1200px) {
+  .men-contenedor-ropa,
+  .girl-contenedor-ropa,
+  .couple-contenedor-ropa {
+    width: 85%;
+    gap: 35px;
+  }
+
+  .men-card,
+  .girl-card,
+  .couple-card {
+    height: 170px;
+  }
+
+  .men-card img,
+  .girl-card img,
+  .couple-card img {
+    height: 165px;
+  }
+
+  .search-bar {
+    right: 10%;
+  }
+}
+
+/* tablet */
+
+@media (max-width: 900px) {
+  .men-title,
+  .girl-title,
+  .couple-title {
+    font-size: 3.2em;
+    top: 10px;
+  }
+
+  .men-contenedor-ropa,
+  .girl-contenedor-ropa,
+  .couple-contenedor-ropa {
+    width: 92%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  .men-card,
+  .girl-card,
+  .couple-card {
+    height: 180px;
+  }
+
+  .men-card img,
+  .girl-card img,
+  .couple-card img {
+    width: 100%;
+    height: 170px;
+  }
+
+  .cart-container {
+    width: 70%;
+  }
+
+  .infoPromotion {
+    position: static;
+    transform: none;
+    padding: 15px 10px;
+  }
+
+  .promociones {
+    flex-direction: column;
+    margin: 30px 15px;
+  }
+
+  .promotion img {
+    height: 320px;
+  }
+
+  .cartas {
+    position: static;
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    margin: 50px 15px;
+  }
+
+  .card1,
+  .card2,
+  .card3 {
+    height: auto;
+  }
+
+  .men-welcome,
+  .girl-welcome,
+  .couple-welcome {
+    height: 360px;
+  }
+
+  .titulo,
+  .informacion h3,
+  .contenido {
+    position: static;
+    transform: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .titulo {
+    margin: 50px 0 20px;
+  }
+
+  .informacion h3 {
+    padding: 30px 15px;
+  }
+
+  .contenido {
+    margin-top: 40px;
+  }
+
+  .contenido footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* celular */
+
+@media (max-width: 600px) {
+  .men-title,
+  .girl-title,
+  .couple-title {
+    width: 70%;
+    text-align: center;
+    font-size: 2.2em;
+    top: 8px;
+  }
+
+  .men-salida,
+  .girl-salida,
+  .couple-salida,
+  .men-mostrar,
+  .girl-mostrar,
+  .couple-mostrar {
+    font-size: 2em;
+    top: 18px;
+  }
+
+  .men-scroll,
+  .girl-scroll,
+  .couple-scroll {
+    top: 85px;
+    height: calc(100vh - 85px);
+  }
+
+  .men-contenedor-ropa,
+  .girl-contenedor-ropa,
+  .couple-contenedor-ropa {
+    width: 88%;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 120px;
+  }
+
+  .men-card,
+  .girl-card,
+  .couple-card {
+    height: 200px;
+  }
+
+  .men-card img,
+  .girl-card img,
+  .couple-card img {
+    width: 100%;
+    height: 180px;
+  }
+
+  .men-modal-contenido,
+  .girl-modal-content,
+  .couple-modal-contenido {
+    width: 88%;
+    padding: 18px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .men-tallas,
+  .girl-tallas,
+  .couple-tallas {
+    position: static;
+    margin-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .men-btn-carrito,
+  .girl-btn-carrito,
+  .couple-btn-carrito {
+    width: 100%;
+    font-size: 1.2em;
+  }
+
+  .cart-container {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .cart-right {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .cart-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .menu {
+    justify-content: center;
+    padding: 15px 10px;
+  }
+
+  .search-bar {
+    width: 55%;
+    right: 0;
+  }
+
+  .search-bar input {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .icon {
+    top: 22px;
+    right: 70px;
+    font-size: 2rem;
+  }
+
+  .corazon {
+    top: 22px;
+    right: 18px;
+    font-size: 2rem;
+  }
+
+  .infoPromotion {
+    position: static;
+    transform: none;
+    font-size: .8rem;
+    padding: 15px 10px;
+  }
+
+  .promociones {
+    flex-direction: column;
+    margin: 25px 10px;
+    gap: 20px;
+  }
+
+  .promotion img {
+    height: 230px;
+  }
+
+  .cartas {
+    position: static;
+    flex-direction: column;
+    width: 94%;
+    height: auto;
+    min-height: auto;
+    margin: 35px auto;
+    gap: 30px;
+  }
+
+  .men-welcome,
+  .girl-welcome,
+  .couple-welcome {
+    height: 250px;
+  }
+
+  .texto {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .texto p {
+    font-size: 1.2rem;
+  }
+
+  .texto button {
+    width: 90%;
+    font-size: 1rem;
+  }
+
+  .titulo,
+  .informacion h3,
+  .contenido {
+    position: static;
+    transform: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .contenido footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contenido ul {
+    margin: 15px;
+    text-align: center;
+  }
+
+  .contenido li {
+    margin: 15px;
+  }
+
+  .favorites-modal {
+    width: 85%;
+    right: 5%;
+  }
+
+  .search-results {
+    width: 100%;
+  }
+
+  .welcome-modal-content {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .welcome-modal-img {
+    height: 250px;
+  }
+
+  .welcome-buy-button {
+    width: 100%;
+  }
+}

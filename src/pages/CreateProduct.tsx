@@ -7,10 +7,8 @@ function CreateProduct() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // Categoria inicial desde la URL
   const initialCategory = searchParams.get("category") || "";
 
-  // Estados
   const [category, setCategory] = useState(initialCategory);
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -19,7 +17,6 @@ function CreateProduct() {
   const [tipo, setTipo] = useState("");
 
   const handleCreate = async () => {
-    // Validaciones
     if (!name || !price || !description || !img || !tipo || !category) {
       alert("Todos los campos son obligatorios");
       return;
@@ -30,7 +27,6 @@ function CreateProduct() {
       return;
     }
 
-    // Insertar en Supabase
     const { error } = await supabase.from("productos").insert([
       {
         name,
@@ -47,7 +43,6 @@ function CreateProduct() {
     } else {
       alert(`Producto creado en ${category} 🚀`);
 
-      // Limpiar campos
       setName("");
       setPrice(0);
       setDescription("");
@@ -69,7 +64,6 @@ function CreateProduct() {
 
       <div className="box-create">
 
-        {/* Tipo */}
         <select
           className="input-create"
           value={tipo}
@@ -80,7 +74,6 @@ function CreateProduct() {
           <option value="zapatos">Zapatos</option>
         </select>
 
-        {/* Categoria */}
         <select
           className="input-create"
           value={category}
@@ -92,7 +85,6 @@ function CreateProduct() {
           <option value="couple">Couple</option>
         </select>
 
-        {/* Nombre */}
         <input
           className="input-create"
           placeholder="Nombre"
@@ -100,7 +92,6 @@ function CreateProduct() {
           onChange={(e) => setName(e.target.value)}
         />
 
-        {/* Precio */}
         <input
           className="input-create"
           placeholder="Precio"
@@ -109,15 +100,13 @@ function CreateProduct() {
           onChange={(e) => setPrice(Number(e.target.value))}
         />
 
-        {/* Descripción */}
-        <input
-          className="input-create"
+        <textarea
+          className="input-create descripcion"
           placeholder="Descripción"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* URL Imagen */}
         <input
           className="input-create"
           placeholder="URL Imagen"
@@ -125,7 +114,6 @@ function CreateProduct() {
           onChange={(e) => setImg(e.target.value)}
         />
 
-        {/* Botón */}
         <button
           className="crear"
           onClick={handleCreate}

@@ -20,9 +20,14 @@ function Couple() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
+  const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
     setCarrito(JSON.parse(localStorage.getItem("carrito_couple") || "[]"));
+
+    setCalificaciones(
+      JSON.parse(localStorage.getItem("ratings_couple") || "{}")
+    );
 
     const cargarFavoritos = async () => {
       const {
@@ -73,6 +78,13 @@ function Couple() {
       JSON.stringify(carrito)
     );
   }, [carrito]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "ratings_couple",
+      JSON.stringify(calificaciones)
+    );
+  }, [calificaciones]);
 
   const productosLocales = [
     {
@@ -194,6 +206,45 @@ function Couple() {
                 className={`btn-favorito ${
                   favoritos[producto.id] ? "activo" : ""
                 }`}
+                onClick={async (e) => {
+                  e.stopPropagation();
+
+                  const {
+                    data: { user },
+                  } = await supabase.auth.getUser();
+
+                  if (!user) return;
+
+                  const favoritosGuardados = JSON.parse(
+                    localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+                  );
+
+                  const existe = favoritosGuardados.find(
+                    (item: any) => item.id === producto.id
+                  );
+
+                  const nuevosFavoritos = existe
+                    ? favoritosGuardados.filter(
+                        (item: any) => item.id !== producto.id
+                      )
+                    : [
+                        ...favoritosGuardados,
+                        {
+                          ...producto,
+                          route: "/sessions/couple",
+                        },
+                      ];
+
+                  localStorage.setItem(
+                    `misFavoritos_${user.id}`,
+                    JSON.stringify(nuevosFavoritos)
+                  );
+
+                  setFavoritos({
+                    ...favoritos,
+                    [producto.id]: !favoritos[producto.id],
+                  });
+                }}
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -227,6 +278,34 @@ function Couple() {
             <span className="couple-precio">
               $ {productoActivo.price}
             </span>
+
+            <div className="rating-temu-modal">
+              {[1, 2, 3, 4, 5].map((estrella) => (
+                <button
+                  key={estrella}
+                  className="rating-star-modal"
+                  onClick={() =>
+                    setCalificaciones({
+                      ...calificaciones,
+                      [productoActivo.id]:
+                        calificaciones[productoActivo.id] === estrella
+                          ? estrella - 0.5
+                          : estrella,
+                    })
+                  }
+                >
+                  {calificaciones[productoActivo.id] >= estrella
+                    ? "★"
+                    : calificaciones[productoActivo.id] >= estrella - 0.5
+                    ? "⯨"
+                    : "☆"}
+                </button>
+              ))}
+            </div>
+
+            <p className="rating-numero">
+              {calificaciones[productoActivo.id] || 0} / 5
+            </p>
 
             <button
               onClick={agregarAlCarrito}

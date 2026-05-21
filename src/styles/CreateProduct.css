@@ -1,175 +1,145 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   height: 100%;
-  font-family: "Bebas Neue";
+  overflow: hidden;
+  font-family: Arial, sans-serif;
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 35%),
+    radial-gradient(circle at top, rgba(255,255,255,.12), transparent 35%),
     linear-gradient(135deg, #050505, #111, #050505);
 }
 
-/* CONTENEDOR GENERAL */
 .create-container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 
-/* HEADER */
+/* TITULO */
 .header {
-  position: fixed;
-  top: 25px;
-  left: 50%;
-  transform: translateX(-50%);
   color: white;
-  font-size: 3.2em;
-  letter-spacing: 4px;
-  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.9);
-  z-index: 10;
+  font-size: 3em;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  text-align: center;
+  text-shadow: 0 8px 18px rgba(0,0,0,.8);
 }
 
 .header::after {
-  content: "";
+  content: "Completa la información del producto";
   display: block;
-  width: 70%;
-  height: 2px;
-  margin: 8px auto 0;
-  background: white;
-  border-radius: 20px;
-  opacity: 0.8;
+  margin-top: 8px;
+  color: #cbd5e1;
+  font-size: .35em;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
-.header:hover {
-  filter: drop-shadow(0 0 10px white);
-  transition: 0.3s ease;
-}
-
-
+/* CAJA */
 .box-create {
-  width: 500px;
-  height: auto;
-  padding: 35px 25px;
-  margin-top: 80px;
+  width: 650px;
+  max-width: 90%;
+
+  padding: 28px;
+
+  background: white;
+  border-radius: 16px;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 14px;
 
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 25px;
-
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 25px 55px rgba(0, 0, 0, 0.75),
-    inset 0 1px 1px rgba(255, 255, 255, 0.35);
-
-  transition: 0.3s ease;
-}
-
-.box-create:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 30px 65px rgba(0, 0, 0, 0.9),
-    0 0 25px rgba(255, 255, 255, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,.6);
 }
 
 /* INPUTS */
 .input-create {
-  width: 370px;
+  width: 100%;
   height: 48px;
-  margin: 11px;
-  padding: 0 16px;
 
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 15px;
+  padding: 0 15px;
 
-  background: rgba(255, 255, 255, 0.92);
-  color: black;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
 
-  font-size: 1.25em;
-  font-family: "Bebas Neue";
+  background: white;
+  color: #111827;
 
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.45);
-  transition: 0.3s ease;
+  font-size: .95rem;
+
+  box-sizing: border-box;
+
+  transition: .2s ease;
 }
 
-.input-create::placeholder {
-  font-family: "Bebas Neue";
-  color: #333;
-  font-size: 1.1rem;
+/* DESCRIPCION */
+.descripcion {
+  height: 95px;
+  padding-top: 14px;
+  resize: none;
 }
 
+/* FOCUS */
 .input-create:focus {
   outline: none;
-  border: 1px solid white;
-  transform: scale(1.02);
-  box-shadow:
-    0 0 0 3px rgba(255, 255, 255, 0.22),
-    0 10px 22px rgba(0, 0, 0, 0.6);
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17,24,39,.10);
 }
 
-/* BOTON CREAR */
+/* BOTON */
 .crear {
-  width: 190px;
-  height: 55px;
-  margin-top: 20px;
+  width: 100%;
+  height: 52px;
 
-  border: 2px solid white;
-  border-radius: 30px;
+  margin-top: 6px;
 
-  color: black;
-  background: white;
+  border: none;
+  border-radius: 10px;
 
-  font-size: 1.8em;
-  font-family: "Bebas Neue";
-  letter-spacing: 3px;
+  background: #111827;
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 700;
 
   cursor: pointer;
-  transition: 0.3s ease;
 
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.55);
+  transition: .2s ease;
 }
 
 .crear:hover {
-  color: white;
   background: black;
-  border-color: white;
+  transform: translateY(-2px);
+}
 
-  transform: translateY(-3px) scale(1.05);
+/* SALIDA */
+.salida {
+  position: fixed;
+  top: 30px;
+  left: 40px;
 
-  box-shadow:
-    0 18px 35px rgba(0, 0, 0, 0.8),
-    0 0 18px rgba(255, 255, 255, 0.25);
+  border: none;
+  background: transparent;
+
+  color: red;
+  font-size: 2.4em;
+
+  cursor: pointer;
 }
 
 /* RESPONSIVE */
-@media (max-width: 650px) {
-  .header {
-    font-size: 2.4em;
-    text-align: center;
-    width: 90%;
-  }
-
+@media (max-width: 700px) {
   .box-create {
-    width: 85%;
-    padding: 30px 15px;
+    width: 88%;
+    padding: 22px;
   }
 
-  .input-create {
-    width: 85%;
-  }
-
-  .crear {
-    width: 170px;
-    font-size: 1.6em;
+  .header {
+    font-size: 2.2em;
   }
 }
