@@ -422,9 +422,12 @@ function Couple() {
                     )}
                   </h3>
 
-                  <button className="cart-buy">
-                    Finalizar compra
-                  </button>
+                  <button
+                  className="cart-buy"
+                  onClick={() => navigate("/pago")}
+                >
+                Finalizar compra
+                </button>
                 </div>
               </>
             )}
