@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../supabase";
-import allProducts from "../data/allProducts";
 import "../styles/Welcome.css";
 import { FaUserCircle, FaHeart } from "react-icons/fa";
 
@@ -25,6 +24,38 @@ function Welcome() {
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState<any>(null);
 
+  const [productosDB, setProductosDB] = useState<any[]>([]);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const favRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        setMenuOpen(false);
+      }
+
+      // 👇 SOLO cerrar si NO estás dentro del modal
+      if (
+        fav &&
+        modalRef.current &&
+        !modalRef.current.contains(target) &&
+        favRef.current &&
+        !favRef.current.contains(target)
+      ) {
+        setFav(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
@@ -38,8 +69,27 @@ function Welcome() {
     if (!userId) return;
 
     const data = localStorage.getItem(`misFavoritos_${userId}`);
+
     setFavoritosGuardados(data ? JSON.parse(data) : []);
   }, [userId, fav]);
+
+  useEffect(() => {
+    const cargarProductos = async () => {
+      const { data, error } = await supabase.from("productos").select("*");
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        setProductosDB(data);
+        console.log(data);
+      }
+    };
+
+    cargarProductos();
+  }, []);
 
   const promocionesWelcome = [
     {
@@ -51,6 +101,7 @@ function Welcome() {
       route: "/sessions/men",
       buttonText: "Comprar",
     },
+
     {
       id: 2,
       title: "Colección Parejas",
@@ -60,6 +111,7 @@ function Welcome() {
       route: "/sessions/couple",
       buttonText: "Comprar",
     },
+
     {
       id: 3,
       title: "Colección Mujer",
@@ -80,6 +132,7 @@ function Welcome() {
       description: "Marca tu propio ritmo",
       route: "/sessions/men",
     },
+
     {
       title: "Ropa para parejas",
       img: couple,
@@ -88,6 +141,7 @@ function Welcome() {
       description: "Dos estilos, una misma conexión",
       route: "/sessions/couple",
     },
+
     {
       title: "Ropa de mujer",
       img: girl,
@@ -99,26 +153,39 @@ function Welcome() {
   ];
 
   const botonesMenu = [
-    ["Cerrar sesión", async () => {
-      await supabase.auth.signOut();
-      navigate("/");
-    }],
+    [
+      "Cerrar sesión",
+
+      async () => {
+        await supabase.auth.signOut();
+        navigate("/");
+      },
+    ],
+
     ["Crear producto", () => navigate("/create")],
-    ["Actualizar producto", () => navigate("/updateProduct")],
+
     ["Mis compras", () => navigate("/my-purchases")],
-    ["Nueva contraseña", () => navigate("/password")]
+
+    ["Nueva contraseña", () => navigate("/password")],
   ];
 
-  const productosFiltrados = allProducts.filter((producto) =>
-    busqueda
-      .toLowerCase()
-      .split(" ")
-      .every(
-        (palabra) =>
-          producto.name.toLowerCase().includes(palabra) ||
-          producto.category.toLowerCase().includes(palabra)
-      )
-  );
+  const productosFiltrados = productosDB.filter((producto) => {
+    const textoBusqueda = busqueda.toLowerCase().trim();
+
+    const nombre = producto.name ? producto.name.toLowerCase() : "";
+
+    const categoria = producto.category ? producto.category.toLowerCase() : "";
+
+    const descripcion = producto.description
+      ? producto.description.toLowerCase()
+      : "";
+
+    return (
+      nombre.includes(textoBusqueda) ||
+      categoria.includes(textoBusqueda) ||
+      descripcion.includes(textoBusqueda)
+    );
+  });
 
   return (
     <>
@@ -126,7 +193,7 @@ function Welcome() {
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Buscar..."
+            placeholder="Buscar productos..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
@@ -138,25 +205,34 @@ function Welcome() {
               </span>
 
               <div className="search-results">
-                {productosFiltrados.map((producto) => (
-                  <div
-                    key={producto.id}
-                    className="search-item"
-                    onClick={() => navigate(producto.route)}
-                  >
-                    <img src={producto.img} alt={producto.name} />
-                    <div>
-                      <h4>{producto.name}</h4>
-                      <p>{producto.category}</p>
+                {productosFiltrados.length > 0 ? (
+                  productosFiltrados.map((producto) => (
+                    <div
+                      key={producto.id}
+                      className="search-item"
+                      onClick={() => {
+                        navigate(`/sessions/${producto.category}`);
+                        setBusqueda("");
+                      }}
+                    >
+                      <img src={producto.img} alt={producto.name} />
+
+                      <div>
+                        <h4>{producto.name}</h4>
+                        <p>{producto.category}</p>
+                        <span>${producto.price}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="no-results">No se encontraron productos</p>
+                )}
               </div>
             </>
           )}
         </div>
 
-        <div className="icon">
+        <div className="icon" ref={menuRef}>
           <FaUserCircle
             className="icon"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -175,7 +251,9 @@ function Welcome() {
           )}
         </div>
 
-        <FaHeart className="corazon" onClick={() => setFav(!fav)} />
+        <div ref={favRef}>
+          <FaHeart className="corazon" onClick={() => setFav(!fav)} />
+        </div>
 
         {fav && (
           <div className="favorites-modal">
@@ -191,6 +269,7 @@ function Welcome() {
                   onClick={() => navigate(producto.route)}
                 >
                   <img src={producto.img} alt={producto.name} />
+
                   <div>
                     <h4>{producto.name}</h4>
                     <p>${producto.price}</p>
@@ -203,17 +282,40 @@ function Welcome() {
               Total: $
               {favoritosGuardados.reduce(
                 (total, producto) => total + producto.price,
-                0
+                0,
               )}
             </h2>
 
-            <button className="pago">Comprar</button>
+            <button
+              className="pago"
+              onClick={(e) => {
+                e.stopPropagation();
+
+                navigate("/pago", {
+                  state: {
+                    productos: favoritosGuardados,
+                    total: favoritosGuardados.reduce(
+                      (total, producto) => total + producto.price,
+                      0,
+                    ),
+                  },
+                });
+              }}
+            >
+              Comprar
+            </button>
           </div>
         )}
       </div>
 
       <section>
         <div className="decorador1"></div>
+      </section>
+
+      <section>
+        <div className="titulo">
+          <h1>BRAND NEW</h1>
+        </div>
       </section>
 
       <section>
@@ -235,10 +337,7 @@ function Welcome() {
       </section>
 
       {promocionActiva && (
-        <div
-          className="welcome-modal"
-          onClick={() => setPromocionActiva(null)}
-        >
+        <div className="welcome-modal" onClick={() => setPromocionActiva(null)}>
           <div
             className="welcome-modal-content"
             onClick={(e) => e.stopPropagation()}
@@ -283,23 +382,13 @@ function Welcome() {
 
             <div className="texto">
               <p>{categoria.description}</p>
-
-              <button onClick={() => navigate(categoria.route)}>
-                Haz click aquí
-              </button>
             </div>
           </div>
         ))}
       </section>
 
       <section>
-        <div className="titulo">
-          <h1>BRAND NEW</h1>
-        </div>
-      </section>
-
-      <section>
-        <footer className="informacion">
+        <footer className="informacionWelcome">
           <h3>SOLO ESCOGE LA CATEGORÍA, EL ESTILO LO PONES TÚ</h3>
         </footer>
       </section>
@@ -309,30 +398,48 @@ function Welcome() {
           <footer>
             <ul>
               <p className="lista">CATEGORIAS</p>
-              <li><a href="/sessions/men">Hombres</a></li>
-              <li><a href="/sessions/girl">Mujeres</a></li>
-              <li><a href="/sessions/couple">Parejas</a></li>
+              <li>
+                <a href="/sessions/men">Hombres</a>
+              </li>
+              <li>
+                <a href="/sessions/girl">Mujeres</a>
+              </li>
+              <li>
+                <a href="/sessions/couple">Parejas</a>
+              </li>
             </ul>
 
             <ul>
               <p className="lista">SOBRE NOSOTROS</p>
               <li>
-                <a href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://web.whatsapp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Contacto
                 </a>
               </li>
-              <li><a href="/tiendas">Tiendas brand new</a></li>
+              <li>
+                <a href="/tiendas">Tiendas brand new</a>
+              </li>
             </ul>
 
             <ul>
               <p className="lista">INFORMACION DE LA EMPRESA</p>
               <li>
-                <a href="https://policies.google.com/privacy?hl=es" target="_blank">
+                <a
+                  href="https://policies.google.com/privacy?hl=es"
+                  target="_blank"
+                >
                   Politica de privacidad
                 </a>
               </li>
               <li>
-                <a href="https://policies.google.com/terms?hl=es" target="_blank">
+                <a
+                  href="https://policies.google.com/terms?hl=es"
+                  target="_blank"
+                >
                   Terminos y condiciones
                 </a>
               </li>

@@ -1,0 +1,174 @@
+.my-purchases-container {
+  min-height: 100vh;
+  background: #111;
+  color: white;
+  padding: 40px;
+}
+
+.my-purchases-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.my-purchases-header h1 {
+  font-size: 40px;
+}
+
+.btn-regresar {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: white;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-regresar:hover {
+  transform: scale(1.05);
+}
+
+.empty-purchases {
+  width: 100%;
+  text-align: center;
+  margin-top: 120px;
+}
+
+.empty-purchases h2 {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.empty-purchases p {
+  color: #aaa;
+}
+
+.purchases-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.purchase-card {
+  background: #1c1c1c;
+  border-radius: 20px;
+  padding: 25px;
+  border: 1px solid #2e2e2e;
+}
+
+.purchase-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.purchase-top h2 {
+  font-size: 24px;
+}
+
+.purchase-date {
+  color: #aaa;
+}
+
+.purchase-products {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.purchase-product {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #141414;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.purchase-product img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.purchase-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.purchase-info h3 {
+  font-size: 22px;
+}
+
+.purchase-info p {
+  color: #ccc;
+}
+
+.purchase-info span {
+  color: white;
+  font-weight: bold;
+}
+
+.purchase-footer {
+  margin-top: 25px;
+  border-top: 1px solid #333;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.purchase-footer p {
+  color: #ccc;
+}
+
+.purchase-footer span {
+  color: white;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.purchase-footer h2 {
+  font-size: 28px;
+}
+
+@media (max-width: 768px) {
+  .my-purchases-container {
+    padding: 20px;
+  }
+
+  .my-purchases-header h1 {
+    font-size: 30px;
+  }
+
+  .purchase-product {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .purchase-product img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .purchase-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .purchase-footer h2 {
+    font-size: 24px;
+  }
+}

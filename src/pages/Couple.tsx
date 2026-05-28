@@ -4,31 +4,37 @@ import { supabase } from "../supabase";
 import "../styles/Couple.css";
 import { FaShoppingBag } from "react-icons/fa";
 
-import couple from "../assets/couple/couple.png";
-import black from "../assets/couple/black.png";
-import blue from "../assets/couple/blue.png";
-import vans from "../assets/couple/vans.png";
-import llavero from "../assets/couple/llavero.png";
-import alfombra from "../assets/couple/alfombra.png";
-
 function Couple() {
   const navigate = useNavigate();
 
   const [productoActivo, setProductoActivo] = useState<any>(null);
-  const [carrito, setCarrito] = useState<any[]>([]);
+
+  const [carrito, setCarrito] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem("carrito_couple");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
   const [calificaciones, setCalificaciones] = useState<{ [key: number]: number }>({});
 
+  // 💾 persistencia carrito
   useEffect(() => {
-    setCarrito(JSON.parse(localStorage.getItem("carrito_couple") || "[]"));
+    localStorage.setItem("carrito_couple", JSON.stringify(carrito));
+  }, [carrito]);
 
-    setCalificaciones(
-      JSON.parse(localStorage.getItem("ratings_couple") || "{}")
-    );
+  // 💾 persistencia ratings
+  useEffect(() => {
+    localStorage.setItem("ratings_couple", JSON.stringify(calificaciones));
+  }, [calificaciones]);
 
+  useEffect(() => {
     const cargarFavoritos = async () => {
       const {
         data: { user },
@@ -40,13 +46,13 @@ function Couple() {
         localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
       );
 
-      const objeto: { [key: number]: boolean } = {};
+      const obj: { [key: number]: boolean } = {};
 
       guardados.forEach((item: any) => {
-        objeto[item.id] = true;
+        obj[item.id] = true;
       });
 
-      setFavoritos(objeto);
+      setFavoritos(obj);
     };
 
     const cargarProductos = async () => {
@@ -72,79 +78,15 @@ function Couple() {
     cargarProductos();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "carrito_couple",
-      JSON.stringify(carrito)
-    );
-  }, [carrito]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "ratings_couple",
-      JSON.stringify(calificaciones)
-    );
-  }, [calificaciones]);
-
-  const productosLocales = [
-    {
-      id: 1,
-      name: "Couple Set",
-      price: 250,
-      img: couple,
-      description: "Set de ropa para parejas",
-      sizes: ["S", "M", "L", "XL"],
-    },
-    {
-      id: 2,
-      name: "Black Match",
-      price: 200,
-      img: black,
-      description: "Outfit negro a juego",
-      sizes: ["S", "M", "L", "XL"],
-    },
-    {
-      id: 3,
-      name: "Blue Match",
-      price: 200,
-      img: blue,
-      description: "Outfit azul a juego",
-      sizes: ["S", "M", "L", "XL"],
-    },
-    {
-      id: 4,
-      name: "Vans Couple",
-      price: 180,
-      img: vans,
-      description: "Vans para parejas",
-      sizes: ["38", "39", "40", "41"],
-    },
-    {
-      id: 5,
-      name: "Llavero",
-      price: 50,
-      img: llavero,
-      description: "Llavero para parejas",
-      sizes: ["Único"],
-    },
-    {
-      id: 6,
-      name: "Alfombra",
-      price: 120,
-      img: alfombra,
-      description: "Alfombra especial para parejas",
-      sizes: ["Único"],
-    },
-  ];
-
-  const productos = [...productosLocales, ...productosDB];
-
   const abrirProducto = (producto: any) => {
     setProductoActivo(producto);
     setTallaSeleccionada(null);
   };
 
-  const cerrarProducto = () => setProductoActivo(null);
+  const cerrarProducto = () => {
+    setProductoActivo(null);
+    setTallaSeleccionada(null);
+  };
 
   const agregarAlCarrito = () => {
     if (!tallaSeleccionada) {
@@ -152,8 +94,8 @@ function Couple() {
       return;
     }
 
-    setCarrito([
-      ...carrito,
+    setCarrito((prev) => [
+      ...prev,
       {
         name: productoActivo.name,
         price: productoActivo.price,
@@ -166,8 +108,10 @@ function Couple() {
   };
 
   const eliminarProducto = (index: number) => {
-    setCarrito(carrito.filter((_, i) => i !== index));
+    setCarrito((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const total = carrito.reduce((acc, item) => acc + Number(item.price), 0);
 
   return (
     <>
@@ -176,14 +120,9 @@ function Couple() {
         className="couple-fondo"
       />
 
-      <h1 className="couple-title">
-        Brand New for couples
-      </h1>
+      <h1 className="couple-title">Brand New for couples</h1>
 
-      <button
-        className="couple-salida"
-        onClick={() => navigate("/welcome")}
-      >
+      <button className="couple-salida" onClick={() => navigate("/welcome")}>
         ✕
       </button>
 
@@ -194,16 +133,17 @@ function Couple() {
         <FaShoppingBag />
       </button>
 
+      {/* GRID */}
       <div className="couple-scroll">
         <section className="couple-contenedor-ropa">
-          {productos.map((producto, index) => (
+          {productosDB.map((producto, index) => (
             <div
               key={index}
               className="couple-card"
               onClick={() => abrirProducto(producto)}
             >
               <button
-                className={`btn-favorito ${
+                className={`couple-btn-favorito ${
                   favoritos[producto.id] ? "activo" : ""
                 }`}
                 onClick={async (e) => {
@@ -215,42 +155,31 @@ function Couple() {
 
                   if (!user) return;
 
-                  const favoritosGuardados = JSON.parse(
+                  const guardados = JSON.parse(
                     localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
                   );
 
-                  const existe = favoritosGuardados.find(
+                  const existe = guardados.find(
                     (item: any) => item.id === producto.id
                   );
 
-                  const nuevosFavoritos = existe
-                    ? favoritosGuardados.filter(
-                        (item: any) => item.id !== producto.id
-                      )
-                    : [
-                        ...favoritosGuardados,
-                        {
-                          ...producto,
-                          route: "/sessions/couple",
-                        },
-                      ];
+                  const nuevos = existe
+                    ? guardados.filter((i: any) => i.id !== producto.id)
+                    : [...guardados, { ...producto, route: "/sessions/couple" }];
 
                   localStorage.setItem(
                     `misFavoritos_${user.id}`,
-                    JSON.stringify(nuevosFavoritos)
+                    JSON.stringify(nuevos)
                   );
 
-                  setFavoritos({
-                    ...favoritos,
-                    [producto.id]: !favoritos[producto.id],
-                  });
+                  setFavoritos((prev) => ({
+                    ...prev,
+                    [producto.id]: !prev[producto.id],
+                  }));
                 }}
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="icono-corazon"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                <svg viewBox="0 0 24 24" className="couple-icono-corazon">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
               </button>
 
@@ -260,90 +189,58 @@ function Couple() {
         </section>
       </div>
 
+      {/* MODAL */}
       {productoActivo && (
-        <div
-          className="couple-modal"
-          onClick={cerrarProducto}
-        >
+        <div className="couple-modal" onClick={cerrarProducto}>
           <div
             className="couple-modal-contenido"
             onClick={(e) => e.stopPropagation()}
           >
             <img src={productoActivo.img} />
 
-            <h2>{productoActivo.name}</h2>
+            <div className="couple-info">
+              <h2>{productoActivo.name}</h2>
+              <p>{productoActivo.description}</p>
 
-            <p>{productoActivo.description}</p>
 
-            <span className="couple-precio">
-              $ {productoActivo.price}
-            </span>
 
-            <div className="rating-temu-modal">
-              {[1, 2, 3, 4, 5].map((estrella) => (
-                <button
-                  key={estrella}
-                  className="rating-star-modal"
-                  onClick={() =>
-                    setCalificaciones({
-                      ...calificaciones,
-                      [productoActivo.id]:
-                        calificaciones[productoActivo.id] === estrella
-                          ? estrella - 0.5
-                          : estrella,
-                    })
-                  }
-                >
-                  {calificaciones[productoActivo.id] >= estrella
-                    ? "★"
-                    : calificaciones[productoActivo.id] >= estrella - 0.5
-                    ? "⯨"
-                    : "☆"}
-                </button>
-              ))}
-            </div>
+              <span className="couple-precio">
+                $ {productoActivo.price}
+              </span>
 
-            <p className="rating-numero">
-              {calificaciones[productoActivo.id] || 0} / 5
-            </p>
-
-            <button
-              onClick={agregarAlCarrito}
-              className="couple-btn-carrito"
-            >
-              Agregar al carrito
-            </button>
-
-            <button
-              onClick={cerrarProducto}
-              className="couple-btn-cerrar"
-            >
-              ✕
-            </button>
-
-            <div className="couple-tallas">
-              {(productoActivo?.sizes || []).map(
-                (talla: string) => (
+              <div className="couple-tallas">
+                {(productoActivo?.sizes || []).map((talla: string) => (
                   <button
                     key={talla}
                     className={`couple-talla-btn ${
-                      tallaSeleccionada === talla
-                        ? "active"
-                        : ""
+                      tallaSeleccionada === talla ? "active" : ""
                     }`}
-                    onClick={() =>
-                      setTallaSeleccionada(talla)
-                    }
+                    onClick={() => setTallaSeleccionada(talla)}
                   >
                     {talla}
                   </button>
-                )
-              )}
+                ))}
+              </div>
+
+              <button
+                onClick={agregarAlCarrito}
+                className="couple-btn-carrito"
+              >
+                Agregar al carrito
+              </button>
+
+              <button
+                onClick={cerrarProducto}
+                className="couple-btn-cerrar"
+              >
+                ✕
+              </button>
             </div>
           </div>
         </div>
       )}
 
+      {/* 🛒 CARRITO ESTILO MEN */}
       {mostrarCarrito && (
         <div
           className="cart-overlay"
@@ -366,44 +263,23 @@ function Couple() {
 
             {carrito.length === 0 ? (
               <div className="cart-empty">
-                <h3>Carrito vacío</h3>
-
-                <p>Agrega prendas para continuar.</p>
+                <h3>Tu carrito está vacío</h3>
               </div>
             ) : (
               <>
                 <div className="cart-items">
                   {carrito.map((item, index) => (
-                    <div
-                      key={index}
-                      className="cart-item"
-                    >
-                      <div className="cart-left">
-                        <img
-                          src={item.img}
-                          className="cart-img"
-                        />
+                    <div key={index} className="cart-item">
+                      <img src={item.img} className="cart-img" />
 
-                        <div className="cart-info">
-                          <h3>{item.name}</h3>
-
-                          <p>
-                            Talla:
-                            <span> {item.talla}</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="cart-right">
-                        <span className="cart-price">
-                          $ {item.price}
-                        </span>
+                      <div>
+                        <h3>{item.name}</h3>
+                        <p>Talla: {item.talla}</p>
+                        <p>$ {item.price}</p>
 
                         <button
                           className="cart-delete"
-                          onClick={() =>
-                            eliminarProducto(index)
-                          }
+                          onClick={() => eliminarProducto(index)}
                         >
                           Eliminar
                         </button>
@@ -413,16 +289,27 @@ function Couple() {
                 </div>
 
                 <div className="cart-footer">
-                  <h3>
-                    Total: $
-                    {carrito.reduce(
-                      (total, item) =>
-                        total + Number(item.price),
-                      0
-                    )}
-                  </h3>
+                  <div className="cart-total">
+                    <span>Total</span>
+                    <h3>${total}</h3>
+                  </div>
 
-                  <button className="cart-buy">
+                  <button
+                    className="cart-buy"
+                    onClick={() => {
+                      localStorage.setItem(
+                        "checkoutProductos",
+                        JSON.stringify(carrito)
+                      );
+
+                      navigate("/pago", {
+                        state: {
+                          productos: carrito,
+                          total,
+                        },
+                      });
+                    }}
+                  >
                     Finalizar compra
                   </button>
                 </div>

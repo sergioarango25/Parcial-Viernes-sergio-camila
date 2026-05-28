@@ -9,16 +9,18 @@ import CreateProduct from "./pages/CreateProduct";
 import ProtectedRoute from "./ProtectedRoute";
 import Tiendas from "./pages/Tiendas";
 import Password from "./pages/password";
+import Pago from "./pages/pago";
+import MyPurchases from "./pages/MyPurchases";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Públicas */}
+        {/* PUBLICAS */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Privadas */}
+        {/* PRIVADAS */}
         <Route
           path="/welcome"
           element={
@@ -63,6 +65,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/tiendas"
           element={
@@ -71,6 +74,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/password"
           element={
@@ -79,8 +83,26 @@ function App() {
             </ProtectedRoute>
           }
         />
-      </Routes>
 
+        {/* 💳 TU PASARELA DE PAGO */}
+        <Route
+          path="/pago"
+          element={
+            <ProtectedRoute>
+              <Pago />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-purchases"
+          element={
+            <ProtectedRoute>
+              <MyPurchases />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

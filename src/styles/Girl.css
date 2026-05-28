@@ -1,4 +1,3 @@
-/* FONDO */
 .girl-fondo {
   position: fixed;
   top: 0;
@@ -6,19 +5,22 @@
   width: 100%;
   height: 100vh;
   object-fit: cover;
+  filter: brightness(.35);
   z-index: 1;
 }
 
 /* HEADER */
+
 .girl-titulo {
   position: fixed;
   top: 0;
-  border-bottom: 3px solid rgb(194, 10, 50);
   left: 0;
   width: 100%;
-  height: 90px;
-  background: black;
-  box-shadow: 0 10px 3px rgba(0, 0, 0, 0.3);
+  height: 80px;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
   z-index: 20;
 }
 
@@ -27,83 +29,47 @@
   top: -5px;
   left: 50%;
   transform: translate(-50%, -50%);
-  color:white;
+  color: white;
   font-family: "Bebas Neue";
-  font-size: 4.5em;
+  font-size: 4.2em;
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px rgba(255,255,255,.2);
   z-index: 30;
 }
 
 /* BOTONES */
-.girl-mostrar {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 2.5em;
-  color: white;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 1001;
-}
 
+.girl-mostrar,
 .girl-salida {
   position: fixed;
   top: 20px;
-  left: 20px;
   font-size: 2.5em;
   color: white;
   background: transparent;
   border: none;
   cursor: pointer;
+  transition: .3s ease;
   z-index: 1001;
-  animation: girl-giro 0.5s ease;
 }
 
+.girl-mostrar {
+  right: 20px;
+}
+
+.girl-salida {
+  left: 20px;
+}
+
+.girl-mostrar:hover,
 .girl-salida:hover {
   transform: scale(1.1);
-  color: red;
+  color: #ffd700;
 }
 
-/* BOTÓN CREAR */
-.btn-create {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 120px;
-  height: 55px;
-  border: 2px solid white;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  color: white;
-  font-size: 1.8em;
-  font-family: "Bebas Neue";
-  letter-spacing: 2px;
-  cursor: pointer;
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  z-index: 100;
-}
 
-.btn-create:hover {
-  transform: scale(1.05);
-  background: white;
-  color: black;
-  border: 2px solid black;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-}
-
-.btn-create:active {
-  transform: scale(0.98);
-}
-
-/* CONTENEDOR */
 .girl-scroll {
   position: fixed;
   top: 90px;
-  left: 0;
   width: 100%;
   height: calc(100vh - 90px);
   overflow-y: auto;
@@ -114,84 +80,141 @@
 }
 
 /* GRID */
+
 .girl-contenedor-ropa {
-  width: 70%;
+  width: 75%;
+
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  padding: 40px 0 80px 0;
+
+  grid-template-columns: repeat(3,1fr);
+
+  gap: 45px;
+
+  padding: 50px 0 100px;
 }
 
 /* CARD */
+
 .girl-card {
-  background-color: white;
-  height: 180px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-family: "Bebas Neue";
-  font-size: 1.5em;
-  box-shadow: 0 10px 5px rgba(0, 0, 0, 10);
-  transition: transform 0.3s ease;
   position: relative;
+
+  height: 220px;
+
+  border-radius: 25px;
+
+  background: rgba(255,255,255,.08);
+
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  overflow: hidden;
+
+  box-shadow: 0 10px 35px rgba(0,0,0,.45);
+
+  transition: .35s ease;
+
+  cursor: pointer;
 }
 
 .girl-card img {
-  width: 120%;
-  height: 180px;
+  width: 100%;
+  height: 200px;
+
   object-fit: contain;
-  padding: 15px;
+
+  padding: 20px;
+
+  transition: .4s ease;
 }
 
 .girl-card:hover {
-  border: 2px solid pink;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 10);
-  transform: scale(1.1);
+  transform: translateY(-8px) scale(1.03);
+
+  border: 1px solid rgba(255,255,255,.25);
+
+  box-shadow: 0 20px 45px rgba(0,0,0,.65);
+}
+
+.girl-card:hover img {
+  transform: scale(1.08);
 }
 
 /* FAVORITOS */
+
 .btn-favorito {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 42px;
-  height: 42px;
+  top: 12px;
+  right: 12px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  border: none;
+  background: rgba(255,255,255,.92);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
   opacity: 0;
-  transform: scale(0.85) translateY(-4px);
-  transition: all 0.25s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transition: .25s ease;
+  z-index: 5;
 }
 
 .girl-card:hover .btn-favorito {
   opacity: 1;
-  transform: scale(1) translateY(0);
+
+}
+.girl-rating-temu-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: transparent;
 }
 
-.btn-favorito:hover {
-  transform: scale(1.12);
-  background: white;
-  border-color: rgba(255, 77, 109, 0.45);
-  box-shadow: 0 8px 22px rgba(255, 77, 109, 0.25);
+.girl-rating-star-modal {
+  background: transparent;
+  border: none;
+  font-size: 2.6rem;
+  cursor: pointer;
+  color: rgba(255, 215, 0, 0.35);
+  transition: transform 0.2s ease, color 0.2s ease, text-shadow 0.2s ease;
+  padding: 0;
 }
 
+/* hover */
+.girl-rating-star-modal:hover {
+  transform: scale(1.25);
+  color: gold;
+  text-shadow: 0 0 10px gold;
+}
+
+/* llena */
+.girl-rating-star-modal.filled {
+  color: gold;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* media */
+.girl-rating-star-modal.half {
+  color: #ffd36a;
+}
 .icono-corazon {
   width: 22px;
   height: 22px;
+
   fill: transparent;
+
   stroke: #ff4d6d;
+
   stroke-width: 2;
-  transition: all 0.25s ease;
 }
 
 .btn-favorito.activo .icono-corazon {
@@ -199,177 +222,557 @@
   stroke: #ff4d6d !important;
 }
 
-/* RATING */
-.rating-temu {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  background: white;
-  padding: 4px 6px;
-  border-radius: 14px;
-  z-index: 10;
-}
-
-.rating-star {
-  background: transparent;
-  border: none;
-  color: black;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.rating-star:hover {
-  transform: scale(1.2);
-}
-
-/* PRECIO */
-.girl-precio {
-  display: block;
-  font-size: 1.4em;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
 /* MODAL */
+
 .girl-modal {
   position: fixed;
+
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+
+  background: rgba(0,0,0,.82);
+
+  backdrop-filter: blur(10px);
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   z-index: 999;
 }
 
-.girl-modal-content {
+.girl-modal-contenido {
   position: relative;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 525px;
+
   width: 90%;
-  border: 2px solid black;
-  box-shadow: 0 0 15px white;
-  text-align: center;
-  animation: girl-zoomIn 0.35s ease;
+  max-width: 1000px;
+
+  min-height: 550px;
+
+  padding: 40px;
+
+  border-radius: 30px;
+
+  background: rgba(15,15,15,.92);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 40px;
+
+  overflow: hidden;
+
+  color: white;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.65);
+
+  animation: zoomIn .35s ease;
 }
 
-.girl-modal-content img {
-  width: 90%;
-  max-height: 270px;
+.girl-modal-contenido img {
+  width: 45%;
+
+  height: 420px;
+
   object-fit: contain;
 }
 
-.girl-modal-content h2 {
-  margin-top: 15px;
-  font-family: "Bebas Neue";
-  font-size: 2em;
-  color: #111;
+.girl-info {
+  width: 50%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
 }
 
-.girl-modal-content p {
-  font-family: Arial, sans-serif;
-  font-size: 1.1em;
-  color: #333;
-  margin: 10px 0;
+.girl-info h2 {
+  font-size: 4rem;
+
+  font-family: "Bebas Neue";
+
+  letter-spacing: 3px;
+
+  margin-bottom: 20px;
+}
+
+.girl-info p {
+  font-size: 1.1rem;
+
+  line-height: 1.8;
+
+  color: rgba(255,255,255,.75);
+
+  margin-bottom: 30px;
+}
+
+.girl-precio {
+  font-size: 2.2rem;
+
+  font-weight: bold;
+
+  margin-bottom: 30px;
 }
 
 /* BOTONES MODAL */
+
 .girl-btn-carrito {
-  margin-top: 15px;
-  margin: 10px;
-  padding: 8px 20px;
+  width: 250px;
+
+  padding: 16px;
+
   border: none;
-  background: black;
-  color: white;
-  font-family: "Bebas Neue";
-  font-size: 1.5em;
+
+  border-radius: 999px;
+
+  background: white;
+
+  color: black;
+
+  font-size: 1.2rem;
+
+  font-weight: bold;
+
   cursor: pointer;
-  border-radius: 10px;
-  transition: all 0.3s ease;
+
+  transition: .3s ease;
 }
 
 .girl-btn-carrito:hover {
-  background: white;
-  color: black;
-  border: 2px solid black;
-  transform: scale(1.1);
+  transform: scale(1.05);
+
+  background: #ffd700;
 }
 
 .girl-btn-cerrar {
   position: absolute;
-  left: 5%;
-  top: 25px;
-  font-size: 1.6em;
-  background: transparent;
+  top: 70px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   border: none;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: 1.5rem;
   cursor: pointer;
+  transition: .3s ease;
 }
 
 .girl-btn-cerrar:hover {
-  transform: scale(1.8);
-  color: red;
+  background: red;
 }
 
 /* TALLAS */
+
 .girl-tallas {
+  position: static;
   display: flex;
-  flex-direction: column;
   gap: 15px;
-  position: absolute;
-  right: 5%;
-  top: 25px;
+  margin-bottom: 20px;
 }
 
 .girl-talla-btn {
   width: 60px;
-  padding: 10px;
-  border: 2px solid black;
-  color: black;
-  background: white;
-  font-family: "Bebas Neue";
-  font-size: 1.3em;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(255,255,255,.2);
+
+  background: rgba(255,255,255,.05);
+
+  color: white;
+
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.25s ease;
+
+  transition: .3s ease;
 }
 
+.girl-talla-btn:hover,
 .girl-talla-btn.active {
-  background: black;
-  color: white;
-}
-
-.girl-talla-btn:hover {
-  background: black;
-  color: white;
+  background: white;
+  color: black;
 }
 
 /* CARRITO */
-.cart-left {
+
+.cart-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.8);
+
+  backdrop-filter: blur(10px);
+
   display: flex;
+
+  justify-content: flex-end;
+
+  z-index: 9999;
+}
+
+.cart-container {
+  width: min(430px,95%);
+
+  height: 100vh;
+
+  padding: 28px;
+
+  overflow-y: auto;
+
+  color: white;
+
+  background: linear-gradient(
+    180deg,
+    #111,
+    #050505
+  );
+
+  box-shadow: -15px 0 40px rgba(0,0,0,.55);
+
+  animation: cartSlide .35s ease;
+}
+
+.cart-header,
+.cart-item {
+  display: flex;
+
+  justify-content: space-between;
+
   align-items: center;
-  gap: 15px;
+}
+
+.cart-header {
+  margin-bottom: 35px;
+}
+
+.cart-header h2 {
+  font-size: 2.5rem;
+
+  font-family: "Bebas Neue";
+}
+
+.cart-items {
+  display: grid;
+  gap: 20px;
+}
+
+.cart-item {
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background: rgba(255,255,255,.06);
+
+  border: 1px solid rgba(255,255,255,.08);
 }
 
 .cart-img {
-  width: 65px;
-  height: 65px;
+  width: 80px;
+  height: 80px;
+
   object-fit: contain;
+}
+
+.cart-buy {
+  width: 100%;
+
+  margin-top: 25px;
+
+  padding: 16px;
+
+  border-radius: 999px;
+
+  border: none;
+
+  background: white;
+
+  color: black;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: .3s ease;
+}
+
+.cart-buy:hover {
+  transform: scale(1.03);
+
+  background: #ffd700;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
   background: white;
   border-radius: 10px;
-  padding: 5px;
 }
 
 /* ANIMACIONES */
-@keyframes girl-giro {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+
+@keyframes zoomIn {
+  from {
+    transform: scale(.75);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-@keyframes girl-zoomIn {
-  from { transform: scale(0.7); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes cartSlide {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
+/* RESPONSIVE */
 
+@media (max-width: 900px) {
+
+  .girl-contenedor-ropa {
+    width: 90%;
+
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .girl-modal-contenido {
+    flex-direction: column;
+
+    max-width: 500px;
+
+    min-height: auto;
+  }
+
+  .girl-modal-contenido img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .girl-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .girl-tallas {
+    position: relative;
+
+    bottom: auto;
+    right: auto;
+
+    justify-content: center;
+
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .girl-contenedor-ropa {
+    grid-template-columns: 1fr;
+  }
+
+  .girl-title {
+    font-size: 2.8rem;
+  }
+
+  .cart-container {
+    width: 100%;
+  }
+}
+
+/* MODAL HORIZONTAL */
+
+.girl-modal-contenido.horizontal {
+  width: 95%;
+  max-width: 1100px;
+  min-height: 620px;
+  background: #0c0c0c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 40px;
+  border-radius: 25px;
+}
+
+/* IZQUIERDA */
+.modal-left {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-left img {
+  width: 100%;
+  max-width: 480px;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* DERECHA */
+.modal-right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* TITULO */
+.modal-right h2 {
+  font-size: 3em;
+  font-family: "Bebas Neue";
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+/* DESCRIPCION */
+.modal-right p {
+  font-size: 1.2em;
+  line-height: 1.8;
+  color: #d4d4d4;
+  margin-bottom: 25px;
+  max-width: 90%;
+}
+
+/* PRECIO */
+.modal-right .men-precio {
+  font-size: 2em;
+  margin-bottom: 25px;
+}
+
+/* ESTRELLAS */
+.modal-right .rating-temu-modal {
+  margin-bottom: 5px;
+}
+
+/* TALLAS */
+.modal-right .men-tallas {
+  position: static;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+/* BOTON */
+.modal-right .men-btn-carrito {
+  width: 250px;
+  height: 60px;
+  font-size: 1.3em;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+
+  .girl-modal-contenido.horizontal {
+    flex-direction: column;
+    padding: 30px;
+  }
+
+  .modal-left,
+  .modal-right {
+    width: 100%;
+  }
+
+  .modal-right h2 {
+    text-align: center;
+    font-size: 3em;
+  }
+
+  .modal-right p {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .modal-right .rating-temu-modal,
+  .modal-right .men-tallas {
+    justify-content: center;
+  }
+
+  .modal-right .men-precio {
+    text-align: center;
+  }
+
+  .modal-right .men-btn-carrito {
+    width: 100%;
+  }
+}
+
+/* SCROLL MODAL */
+.girl-modal {
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.girl-modal-contenido.horizontal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* SCROLL BONITO */
+.girl-modal-contenido.horizontal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.girl-modal-contenido.horizontal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.girl-modal-contenido.horizontal::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+}
+
+.girl-modal-contenido.horizontal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,.4);
+}
+
+.girl-btn-cerrar {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.girl-btn-cerrar:hover {
+  background: red;
+  transform: scale(1.1);
+}
