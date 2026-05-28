@@ -9,7 +9,7 @@ function Men() {
 
   const [productoActivo, setProductoActivo] = useState<any>(null);
 
-  // ✅ CARRO PERSISTENTE (CORREGIDO)
+  // ✅ carrito persistente seguro
   const [carrito, setCarrito] = useState<any[]>(() => {
     try {
       const saved = localStorage.getItem("carrito_men");
@@ -19,68 +19,70 @@ function Men() {
     }
   });
 
-  const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(
-    null,
-  );
+  const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [productosDB, setProductosDB] = useState<any[]>([]);
-  const [calificaciones, setCalificaciones] = useState<{
-    [key: number]: number;
-  }>({});
   const [favoritos, setFavoritos] = useState<{ [key: number]: boolean }>({});
 
-  // 💾 guardar carrito cada vez que cambie
+  // 💾 persistencia carrito
   useEffect(() => {
     localStorage.setItem("carrito_men", JSON.stringify(carrito));
   }, [carrito]);
 
   useEffect(() => {
-    setCalificaciones(JSON.parse(localStorage.getItem("ratings_men") || "{}"));
+    const cargarDatos = async () => {
+      try {
+        // ratings (evita crash si JSON vacío)
+        const ratings = localStorage.getItem("ratings_men");
+        if (ratings) JSON.parse(ratings);
 
-    const cargarFavoritos = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        // usuario supabase
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (!user) return;
+        if (user) {
+          const guardados = JSON.parse(
+            localStorage.getItem(`misFavoritos_${user.id}`) || "[]"
+          );
 
-      const guardados = JSON.parse(
-        localStorage.getItem(`misFavoritos_${user.id}`) || "[]",
-      );
+          const obj: { [key: number]: boolean } = {};
+          guardados.forEach((item: any) => {
+            obj[item.id] = true;
+          });
 
-      const obj: { [key: number]: boolean } = {};
+          setFavoritos(obj);
+        }
 
-      guardados.forEach((item: any) => {
-        obj[item.id] = true;
-      });
+        // productos
+        const { data, error } = await supabase
+          .from("productos")
+          .select("*")
+          .eq("category", "men");
 
-      setFavoritos(obj);
-    };
+        if (error) {
+          console.error("Error productos:", error.message);
+          return;
+        }
 
-    const cargarProductos = async () => {
-      const { data, error } = await supabase
-        .from("productos")
-        .select("*")
-        .eq("category", "men");
-
-      if (!error && data) {
-        setProductosDB(
-          data.map((p: any) => ({
-            ...p,
-            sizes:
-              p.type === "zapatos"
-                ? ["38", "39", "40", "41"]
-                : ["S", "M", "L", "XL"],
-          })),
-        );
+        if (data) {
+          setProductosDB(
+            data.map((p: any) => ({
+              ...p,
+              sizes:
+                p.type === "zapatos"
+                  ? ["38", "39", "40", "41"]
+                  : ["S", "M", "L", "XL"],
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Error general:", err);
       }
     };
 
-    cargarFavoritos();
-    cargarProductos();
+    cargarDatos();
   }, []);
-
-  const productos = productosDB;
 
   const abrirProducto = (producto: any) => {
     setProductoActivo(producto);
@@ -93,6 +95,8 @@ function Men() {
   };
 
   const agregarAlCarrito = () => {
+    if (!productoActivo) return;
+
     if (!tallaSeleccionada) {
       alert("Selecciona una talla");
       return;
@@ -102,7 +106,7 @@ function Men() {
       ...prev,
       {
         name: productoActivo.name,
-        price: productoActivo.price,
+        price: Number(productoActivo.price),
         talla: tallaSeleccionada,
         img: productoActivo.img,
       },
@@ -112,16 +116,19 @@ function Men() {
   };
 
   const eliminarProducto = (index: number) => {
-    setCarrito(carrito.filter((_, i) => i !== index));
+    setCarrito((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const total = carrito.reduce((acc, item) => acc + Number(item.price), 0);
+  const total = carrito.reduce((acc, item) => acc + Number(item.price || 0), 0);
+
+  const productos = productosDB;
 
   return (
     <>
       <img
         src="https://i.pinimg.com/1200x/72/1b/35/721b35c2210b7b751b76d25ecfdc577e.jpg"
         className="men-fondo"
+        alt="fondo"
       />
 
       <h1 className="men-title">Brand New for men</h1>
@@ -135,25 +142,27 @@ function Men() {
         <section className="men-contenedor-ropa">
           {productos.map((producto, index) => (
             <div
-              key={index}
+              key={producto.id || index}
               className="men-card"
               onClick={() => abrirProducto(producto)}
             >
               <button
-                className={`btn-favorito ${favoritos[producto.id] ? "activo" : ""}`}
+                className={`btn-favorito ${
+                  favoritos[producto.id] ? "activo" : ""
+                }`}
               >
                 <svg viewBox="0 0 24 24" className="icono-corazon">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </button>
 
-              <img src={producto.img} />
+              <img src={producto.img} alt={producto.name} />
             </div>
           ))}
         </section>
       </div>
 
-      {/* MODAL PRODUCTO */}
+      {/* MODAL */}
       {productoActivo && (
         <div className="men-modal" onClick={cerrarProducto}>
           <div
@@ -165,17 +174,17 @@ function Men() {
             </button>
 
             <div className="modal-left">
-              <img src={productoActivo.img} />
+              <img src={productoActivo.img} alt={productoActivo.name} />
             </div>
 
             <div className="modal-right">
               <h2>{productoActivo.name}</h2>
               <p>{productoActivo.description}</p>
 
+              <span className="men-precio">
+                ${productoActivo.price}
+              </span>
 
-              <span className="men-precio">${productoActivo.price}</span>
-
-              {/* TALLAS */}
               <div className="men-tallas">
                 {(productoActivo?.sizes || []).map((talla: string) => (
                   <button
@@ -222,7 +231,7 @@ function Men() {
                 <div className="cart-items">
                   {carrito.map((item, index) => (
                     <div key={index} className="cart-item">
-                      <img src={item.img} className="cart-img" />
+                      <img src={item.img} className="cart-img" alt="" />
 
                       <div>
                         <h3>{item.name}</h3>
@@ -251,7 +260,7 @@ function Men() {
                     onClick={() => {
                       localStorage.setItem(
                         "checkoutProductos",
-                        JSON.stringify(carrito),
+                        JSON.stringify(carrito)
                       );
 
                       navigate("/pago", {

@@ -12,22 +12,43 @@ import girl from "../assets/girl-welcome.png";
 import men from "../assets/men-welcome.png";
 import couple from "../assets/couple-welcome.png";
 
+type Producto = {
+  id: string | number;
+  name: string;
+  category: string;
+  description?: string;
+  price?: number | string;
+  img?: string;
+  route?: string;
+};
+
+type Promocion = {
+  id: number;
+  title: string;
+  img: string;
+  description: string;
+  route: string;
+  buttonText: string;
+};
+
 function Welcome() {
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [fav, setFav] = useState(false);
-  const [promocionActiva, setPromocionActiva] = useState<any>(null);
+  const [promocionActiva, setPromocionActiva] = useState<Promocion | null>(
+    null
+  );
 
-  const [favoritosGuardados, setFavoritosGuardados] = useState<any[]>([]);
+  const [favoritosGuardados, setFavoritosGuardados] = useState<Producto[]>([]);
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState<any>(null);
-
-  const [productosDB, setProductosDB] = useState<any[]>([]);
+  const [productosDB, setProductosDB] = useState<Producto[]>([]);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const favRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,24 +58,14 @@ function Welcome() {
         setMenuOpen(false);
       }
 
-      // 👇 SOLO cerrar si NO estás dentro del modal
-      if (
-        fav &&
-        modalRef.current &&
-        !modalRef.current.contains(target) &&
-        favRef.current &&
-        !favRef.current.contains(target)
-      ) {
+      if (fav && favRef.current && !favRef.current.contains(target)) {
         setFav(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [fav]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -68,9 +79,12 @@ function Welcome() {
   useEffect(() => {
     if (!userId) return;
 
-    const data = localStorage.getItem(`misFavoritos_${userId}`);
-
-    setFavoritosGuardados(data ? JSON.parse(data) : []);
+    try {
+      const data = localStorage.getItem(`misFavoritos_${userId}`);
+      setFavoritosGuardados(data ? JSON.parse(data) : []);
+    } catch {
+      setFavoritosGuardados([]);
+    }
   }, [userId, fav]);
 
   useEffect(() => {
@@ -82,42 +96,34 @@ function Welcome() {
         return;
       }
 
-      if (data) {
-        setProductosDB(data);
-        console.log(data);
-      }
+      setProductosDB((data || []) as Producto[]);
     };
 
     cargarProductos();
   }, []);
 
-  const promocionesWelcome = [
+  const promocionesWelcome: Promocion[] = [
     {
       id: 1,
       title: "Colección Hombre",
       img: menPromotion,
-      description:
-        "Looks urbanos para hombre: hoodies, camisetas, chaquetas y accesorios con el estilo Brand New.",
+      description: "Looks urbanos para hombre con estilo Brand New.",
       route: "/sessions/men",
       buttonText: "Comprar",
     },
-
     {
       id: 2,
       title: "Colección Parejas",
       img: couplePromotion,
-      description:
-        "Prendas combinadas para parejas que quieren llevar el mismo estilo con actitud.",
+      description: "Prendas combinadas para parejas.",
       route: "/sessions/couple",
       buttonText: "Comprar",
     },
-
     {
       id: 3,
       title: "Colección Mujer",
       img: hoodiePromotion,
-      description:
-        "Hoodies, jeans y prendas llamativas para mujer con diseños exclusivos de Brand New.",
+      description: "Hoodies y prendas exclusivas para mujer.",
       route: "/sessions/girl",
       buttonText: "Comprar",
     },
@@ -132,58 +138,44 @@ function Welcome() {
       description: "Marca tu propio ritmo",
       route: "/sessions/men",
     },
-
     {
       title: "Ropa para parejas",
       img: couple,
       className: "couple-welcome",
       cardClass: "card2",
-      description: "Dos estilos, una misma conexión",
+      description: "Dos estilos, una conexión",
       route: "/sessions/couple",
     },
-
     {
       title: "Ropa de mujer",
       img: girl,
       className: "girl-welcome",
       cardClass: "card3",
-      description: "Elegancia y actitud pensadas para ella",
+      description: "Elegancia y actitud",
       route: "/sessions/girl",
     },
   ];
 
-  const botonesMenu = [
+  const botonesMenu: [string, () => void | Promise<void>][] = [
     [
       "Cerrar sesión",
-
       async () => {
         await supabase.auth.signOut();
         navigate("/");
       },
     ],
-
     ["Crear producto", () => navigate("/create")],
-
     ["Mis compras", () => navigate("/my-purchases")],
-
     ["Nueva contraseña", () => navigate("/password")],
   ];
 
   const productosFiltrados = productosDB.filter((producto) => {
-    const textoBusqueda = busqueda.toLowerCase().trim();
-
-    const nombre = producto.name ? producto.name.toLowerCase() : "";
-
-    const categoria = producto.category ? producto.category.toLowerCase() : "";
-
-    const descripcion = producto.description
-      ? producto.description.toLowerCase()
-      : "";
+    const texto = busqueda.toLowerCase().trim();
 
     return (
-      nombre.includes(textoBusqueda) ||
-      categoria.includes(textoBusqueda) ||
-      descripcion.includes(textoBusqueda)
+      producto.name?.toLowerCase().includes(texto) ||
+      producto.category?.toLowerCase().includes(texto) ||
+      producto.description?.toLowerCase().includes(texto)
     );
   });
 
@@ -215,7 +207,9 @@ function Welcome() {
                         setBusqueda("");
                       }}
                     >
-                      <img src={producto.img} alt={producto.name} />
+                      {producto.img && (
+                        <img src={producto.img} alt={producto.name} />
+                      )}
 
                       <div>
                         <h4>{producto.name}</h4>
@@ -233,16 +227,13 @@ function Welcome() {
         </div>
 
         <div className="icon" ref={menuRef}>
-          <FaUserCircle
-            className="icon"
-            onClick={() => setMenuOpen(!menuOpen)}
-          />
+          <FaUserCircle onClick={() => setMenuOpen(!menuOpen)} />
 
           {menuOpen && (
             <div className="dropdown">
               <h3>{user?.user_metadata?.name || user?.email?.split("@")[0]}</h3>
 
-              {botonesMenu.map(([texto, accion]: any) => (
+              {botonesMenu.map(([texto, accion]) => (
                 <button key={texto} onClick={accion}>
                   {texto}
                 </button>
@@ -256,7 +247,7 @@ function Welcome() {
         </div>
 
         {fav && (
-          <div className="favorites-modal">
+          <div className="favorites-modal" ref={modalRef}>
             <h2>PRODUCTOS FAVORITOS</h2>
 
             {favoritosGuardados.length === 0 ? (
@@ -266,9 +257,11 @@ function Welcome() {
                 <div
                   key={producto.id}
                   className="favorite-item"
-                  onClick={() => navigate(producto.route)}
+                  onClick={() => producto.route && navigate(producto.route)}
                 >
-                  <img src={producto.img} alt={producto.name} />
+                  {producto.img && (
+                    <img src={producto.img} alt={producto.name} />
+                  )}
 
                   <div>
                     <h4>{producto.name}</h4>
@@ -281,8 +274,8 @@ function Welcome() {
             <h2 className="total-favoritos">
               Total: $
               {favoritosGuardados.reduce(
-                (total, producto) => total + producto.price,
-                0,
+                (total, producto) => total + Number(producto.price || 0),
+                0
               )}
             </h2>
 
@@ -295,8 +288,8 @@ function Welcome() {
                   state: {
                     productos: favoritosGuardados,
                     total: favoritosGuardados.reduce(
-                      (total, producto) => total + producto.price,
-                      0,
+                      (total, producto) => total + Number(producto.price || 0),
+                      0
                     ),
                   },
                 });
@@ -307,22 +300,6 @@ function Welcome() {
           </div>
         )}
       </div>
-
-      <section>
-        <div className="decorador1"></div>
-      </section>
-
-      <section>
-        <div className="titulo">
-          <h1>BRAND NEW</h1>
-        </div>
-      </section>
-
-      <section>
-        <div className="infoPromotion">
-          <h2>CONOCE LA NUEVA COLECCION EXCLUSIVA DE BRAND NEW</h2>
-        </div>
-      </section>
 
       <section className="promociones">
         {promocionesWelcome.map((promo) => (
@@ -337,35 +314,24 @@ function Welcome() {
       </section>
 
       {promocionActiva && (
-        <div className="welcome-modal" onClick={() => setPromocionActiva(null)}>
+        <div
+          className="welcome-modal"
+          onClick={() => setPromocionActiva(null)}
+        >
           <div
             className="welcome-modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              className="welcome-modal-close"
-              onClick={() => setPromocionActiva(null)}
-            >
-              ✕
+            <button onClick={() => setPromocionActiva(null)}>✕</button>
+
+            <img src={promocionActiva.img} alt={promocionActiva.title} />
+
+            <h2>{promocionActiva.title}</h2>
+            <p>{promocionActiva.description}</p>
+
+            <button onClick={() => navigate(promocionActiva.route)}>
+              {promocionActiva.buttonText}
             </button>
-
-            <img
-              src={promocionActiva.img}
-              alt={promocionActiva.title}
-              className="welcome-modal-img"
-            />
-
-            <div className="welcome-modal-info">
-              <h2>{promocionActiva.title}</h2>
-              <p>{promocionActiva.description}</p>
-
-              <button
-                className="welcome-buy-button"
-                onClick={() => navigate(promocionActiva.route)}
-              >
-                {promocionActiva.buttonText}
-              </button>
-            </div>
           </div>
         </div>
       )}
@@ -375,8 +341,8 @@ function Welcome() {
           <div key={categoria.title} className={categoria.cardClass}>
             <img
               src={categoria.img}
-              className={categoria.className}
               alt={categoria.title}
+              className={categoria.className}
               onClick={() => navigate(categoria.route)}
             />
 
@@ -385,67 +351,6 @@ function Welcome() {
             </div>
           </div>
         ))}
-      </section>
-
-      <section>
-        <footer className="informacionWelcome">
-          <h3>SOLO ESCOGE LA CATEGORÍA, EL ESTILO LO PONES TÚ</h3>
-        </footer>
-      </section>
-
-      <section>
-        <div className="contenido">
-          <footer>
-            <ul>
-              <p className="lista">CATEGORIAS</p>
-              <li>
-                <a href="/sessions/men">Hombres</a>
-              </li>
-              <li>
-                <a href="/sessions/girl">Mujeres</a>
-              </li>
-              <li>
-                <a href="/sessions/couple">Parejas</a>
-              </li>
-            </ul>
-
-            <ul>
-              <p className="lista">SOBRE NOSOTROS</p>
-              <li>
-                <a
-                  href="https://web.whatsapp.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Contacto
-                </a>
-              </li>
-              <li>
-                <a href="/tiendas">Tiendas brand new</a>
-              </li>
-            </ul>
-
-            <ul>
-              <p className="lista">INFORMACION DE LA EMPRESA</p>
-              <li>
-                <a
-                  href="https://policies.google.com/privacy?hl=es"
-                  target="_blank"
-                >
-                  Politica de privacidad
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://policies.google.com/terms?hl=es"
-                  target="_blank"
-                >
-                  Terminos y condiciones
-                </a>
-              </li>
-            </ul>
-          </footer>
-        </div>
       </section>
     </>
   );
